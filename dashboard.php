@@ -1,54 +1,30 @@
 <?php
-
-// CEK SESSION
-include "includes/cek_session.php";
-
-// AMBIL DATA SESSION
-$nama = $_SESSION['nama'] ?? $_SESSION['nama_lengkap'] ?? 'Pengguna';
-$email = $_SESSION['email'] ?? '-';
-$role = $_SESSION['role'] ?? '-';
+//dashboard.php
+include 'includes/cek_session.php';
 ?>
+<!DOCYTPE html>
+<html>
+    <head>
+        <title>dashboard - Pelanggaran Siswa</title>
+    <head>
+    <body>
+        <h1>selamat datang, <?php echo $_SESSION['name']; ?></h1>
+        <p>anda login sebagai: <?php echo $_SESSION['role']; ?></p>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard Aplikasi Pelanggaran Siswa</title>
-</head>
 
-<body>
+        <ul>
+            <?php if($_SESSION['role'] == 'admin'){ ?>
+        <li><a href="kelola_guru.php">kelola_guru</a></li>
+        <li><a href="kelola_siswa.php">kelola_siswa</a></li>
+        <li><a href="menu3.php">menu 3</a></li>
+        <li><a href="menu4.php">menu 4</a></li>
+    <?php } ?>
 
-    <h1>Dashboard Aplikasi Pelanggaran Siswa</h1>
-
-    <p>Selamat datang,</p>
-
-    <strong><?php echo htmlspecialchars($nama); ?></strong>
-
-    <p>Email: <?php echo htmlspecialchars($email); ?></p>
-
-    <p>Role: <?php echo htmlspecialchars($role); ?></p>
-
-    <hr>
-
-    <?php if ($role === 'admin'): ?>
-
-        <h3>Menu Admin</h3>
-
-        <p><a href="kelola_guru.php">kelola guru</a></p>
-        <p><a href="kelola_siswa.php">kelola siswa</a></p>
-        <p><a href="kelola_kelas.php">kelola kelas</a></p>
-        <p><a href="kelola_pelanggaran.php">kelola pelanggaran</a></p>
-
-    <?php endif; ?>
-
-    <h3>Menu Admin & Guru</h3>
-
-    <p><a href="kelola_kelas.php">kelola kelas</a></p>
-    <p><a href="kelola_guru.php">kelola guru</a></p>
-
-    <hr>
-
-    <p><a href="logout.php">Logout</a></p>
-
+        <?php if ($_SESSION['role'] == 'guru'){ ?>
+        <li><a href="menu3.php">menu 3</a></li>
+        <li><a href="menu4.php">menu 4</a></li>
+            <?php } ?>
+</ul>
+        <a href="logout.php">logout</a>
 </body>
 </html>
