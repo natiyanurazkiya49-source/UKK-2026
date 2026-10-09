@@ -14,10 +14,11 @@ include 'includes/cek_session.php';
 
         <ul>
             <?php if($_SESSION['role'] == 'admin'){ ?>
-        <li><a href="kelola_guru.php">kelola_guru</a></li>
-        <li><a href="kelola_siswa.php">kelola_siswa</a></li>
-        <li><a href="menu3.php">menu 3</a></li>
-        <li><a href="menu4.php">menu 4</a></li>
+        <li><a href="kelola_guru.php">kelola guru</a></li>
+        <li><a href="kelola_siswa.php">kelola siswa</a></li>
+        <li><a href="kelola_kelas.php">kelola kelas</a></li>
+        <li><a href="kelola_tahun_ajaran.php">kelola tahun ajaran</a></li>
+        <li><a href="kelola_kategori_pelanggaran">kelola kategori pelanggaran</a></li>
     <?php } ?>
 
         <?php if ($_SESSION['role'] == 'guru'){ ?>
