@@ -52,13 +52,13 @@ include 'includes/cek_session.php';
                     </a> 
                       </li>
                 <li class="nav-item mb-2">
-                    <a href="wali_kelas.php" class="nav-link text-white">
+                    <a href="kelola_wali_kelas.php" class="nav-link text-white">
                         Wali Kelas
                     </a> 
                       </li>
                 <li class="nav-item mb-2">
-                    <a href="kategori_pelanggaran.php" class="nav-link text-white">
-                        Kategori Pelanggaran
+                    <a href="kelola_pelanggaran_kategori.php" class="nav-link text-white">
+                        Pelanggaran Kategori
                     </a> 
                       </li>
                 <li class="nav-item mb-2">
@@ -73,7 +73,7 @@ include 'includes/cek_session.php';
                 </li>
                 <hr class="text-secondary">
                 <li class="nav-item">
-                    <a href="#" class="nav-link text-danger">
+                    <a href="logout.php" class="nav-link text-danger">
                         Logout
                     </a>
                 </li>
