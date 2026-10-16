@@ -1,5 +1,5 @@
 <?php
-// kelola_guru.php
+// kelola_guru.php 
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
@@ -21,7 +21,7 @@ $hasil = mysqli_query($koneksi, $sql);
             </h4>
             <ul class="nav nav-pills flex-column">
                 <li class="nav-item mb-2">
-                    <a href="#" class="nav-link active">
+                    <a href="dashboard.php" class="nav-link text-white">
                         Dashboard
                     </a>
                 </li>
@@ -31,7 +31,7 @@ $hasil = mysqli_query($koneksi, $sql);
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="kelola_guru.php" class="nav-link text-white">
+                    <a href="kelola_guru.php" class="nav-link active">
                         Data Guru
                     </a>
                 </li>
@@ -42,7 +42,7 @@ $hasil = mysqli_query($koneksi, $sql);
                 </li>
                 <li class="nav-item mb-2">
                     <a href="kelola_tahun_ajaran.php" class="nav-link text-white">
-                        Tahun Ajaran
+                       Tahun Ajaran
                     </a>
                       </li>
                 <li class="nav-item mb-2">
@@ -51,13 +51,13 @@ $hasil = mysqli_query($koneksi, $sql);
                     </a> 
                       </li>
                 <li class="nav-item mb-2">
-                    <a href="wali_kelas.php" class="nav-link text-white">
+                    <a href="kelola_wali_kelas.php" class="nav-link text-white">
                         Wali Kelas
                     </a> 
                       </li>
                 <li class="nav-item mb-2">
-                    <a href="kategori_pelanggaran.php" class="nav-link text-white">
-                        Kategori Pelanggaran
+                    <a href="kelola_pelanggaran_kategori.php" class="nav-link text-white">
+                        Pelanggaran Kategori
                     </a> 
                       </li>
                 <li class="nav-item mb-2">
@@ -131,7 +131,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
             <td>
                 <a href="edit_guru.php?id=<?php echo $row['id']; ?>">
-                    <button type="button" class="btn btn-warning">Edit</button>
+                   <button type="button" class="btn btn-warning">Edit</button>
                 </a>
 
                 |
@@ -149,4 +149,4 @@ $hasil = mysqli_query($koneksi, $sql);
     </table>
 
 </body>
-</html>
+</html> *

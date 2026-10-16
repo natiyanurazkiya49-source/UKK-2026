@@ -4,7 +4,7 @@ include "config/koneksi.php";
 
 
 $nama = "Natiya Nur Azkiya";
-$kelas = "XI RPL";
+$kelas = "XII RPL";
 $sekolah = "SMK Muhammadiyah Tasikmalaya";
 $jurusan = "Rekayasa Perangkat Lunak";
 $hobi = "Mendengarkan Musik";
