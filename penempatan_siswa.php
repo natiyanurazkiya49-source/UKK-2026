@@ -1,7 +1,5 @@
-
 <?php
 // penempatan_siswa.php
-
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
@@ -46,8 +44,7 @@ $sql = "SELECT
             ks.status_aktif
         FROM t_kelas_siswa ks
         LEFT JOIN t_siswa s ON ks.siswa_id = s.id
-        LEFT JOIN t_tahun_ajaran ta
-            ON ks.tahun_ajaran_id = ta.id
+        LEFT JOIN t_tahun_ajaran ta ON ks.tahun_ajaran_id = ta.id
         LEFT JOIN t_kelas k ON ks.kelas_id = k.id
         ORDER BY ks.id DESC";
 
@@ -56,31 +53,31 @@ $hasil = mysqli_query($koneksi, $sql);
 
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Penempatan Siswa</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap 4 -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
 
+    <!-- CSS DataTables -->
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap4.min.css">
+
     <style>
         body {
-            margin: 0;
             background-color: #f8f9fa;
         }
 
         .sidebar {
             min-height: 100vh;
-            background-color: #343a40;
         }
 
         .sidebar .nav-link {
             color: white;
-            margin-bottom: 5px;
         }
 
         .sidebar .nav-link:hover {
@@ -92,35 +89,19 @@ $hasil = mysqli_query($koneksi, $sql);
         }
 
         .content {
-            min-width: 0;
+            padding: 25px;
         }
 
-        .form-container,
-        .table-container {
+        .form-container {
             background-color: white;
             padding: 20px;
             border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .table-responsive {
-            width: 100%;
-        }
-
-        .table {
-            margin-bottom: 0;
+            margin-bottom: 25px;
         }
 
         .table th,
         .table td {
             vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        @media (max-width: 767px) {
-            .sidebar {
-                min-height: auto;
-            }
         }
     </style>
 </head>
@@ -131,11 +112,8 @@ $hasil = mysqli_query($koneksi, $sql);
     <div class="row">
 
         <!-- SIDEBAR -->
-        <aside class="col-md-3 col-lg-2 sidebar p-3">
-
-            <h4 class="text-white mb-4">
-                My Website
-            </h4>
+        <div class="col-md-3 col-lg-2 bg-dark sidebar p-3">
+            <h4 class="text-white mb-4">My Website</h4>
 
             <ul class="nav nav-pills flex-column">
 
@@ -170,34 +148,31 @@ $hasil = mysqli_query($koneksi, $sql);
                 </li>
 
                 <li class="nav-item mb-2">
-                    <a href="penempatan_siswa.php"
-                       class="nav-link active">
+                    <a href="penempatan_siswa.php" class="nav-link active">
                         Penempatan Siswa
                     </a>
                 </li>
 
                 <li class="nav-item mb-2">
-                    <a href="kelola_wali_kelas.php"
-                       class="nav-link">
+                    <a href="kelola_wali_kelas.php" class="nav-link">
                         Wali Kelas
                     </a>
                 </li>
 
                 <li class="nav-item mb-2">
-                    <a href="kelola_pelanggaran_kategori.php"
-                       class="nav-link">
+                    <a href="kelola_pelanggaran_kategori.php" class="nav-link">
                         Pelanggaran Kategori
                     </a>
                 </li>
 
                 <li class="nav-item mb-2">
-                    <a href="laporan.php" class="nav-link">
+                    <a href="Laporan.php" class="nav-link">
                         Laporan
                     </a>
                 </li>
 
                 <li class="nav-item mb-2">
-                    <a href="aboutme.php" class="nav-link">
+                    <a href="about_me.php" class="nav-link">
                         About Me
                     </a>
                 </li>
@@ -211,15 +186,15 @@ $hasil = mysqli_query($koneksi, $sql);
                 </li>
 
             </ul>
-        </aside>
+        </div>
 
         <!-- KONTEN UTAMA -->
-        <main class="col-md-9 col-lg-10 p-4 content">
+        <main class="col-md-9 col-lg-10 content">
 
-            <h1 class="mb-2">Penempatan Siswa</h1>
+            <h1>Penempatan Siswa</h1>
 
             <p>
-                <a href="dashboard.php">
+                <a href="dashboard.php" class="btn btn-secondary btn-sm">
                     Kembali ke Dashboard
                 </a>
             </p>
@@ -245,108 +220,72 @@ $hasil = mysqli_query($koneksi, $sql);
             <?php } ?>
 
             <!-- FORM PENEMPATAN SISWA -->
-            <div class="form-container">
+            <div class="form-container shadow-sm">
+                <h4 class="mb-3">Form Penempatan Siswa</h4>
 
-                <h3 class="mb-3">Form Penempatan Siswa</h3>
+                <form action="proses_simpan_penempatan.php" method="POST">
 
-                <form action="proses_simpan_penempatan.php"
-                      method="POST">
+                    <div class="form-group">
+                        <label>Siswa</label>
+                        <select name="siswa_id" class="form-control" required>
+                            <option value="">-- Pilih Siswa --</option>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 col-lg-2 col-form-label">
-                            Siswa
-                        </label>
-
-                        <div class="col-md-9 col-lg-6">
-                            <select name="siswa_id"
-                                    class="form-control"
-                                    required>
-                                <option value="">
-                                    -- Pilih Siswa --
+                            <?php while ($s = mysqli_fetch_assoc($siswa)) { ?>
+                                <option value="<?php echo $s['id']; ?>">
+                                    <?php
+                                    echo htmlspecialchars(
+                                        $s['nis'] . ' - ' . $s['nama']
+                                    );
+                                    ?>
                                 </option>
-
-                                <?php while ($s = mysqli_fetch_assoc($siswa)) { ?>
-                                    <option value="<?php echo $s['id']; ?>">
-                                        <?php
-                                        echo htmlspecialchars(
-                                            $s['nis'] . ' - ' . $s['nama']
-                                        );
-                                        ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
+                            <?php } ?>
+                        </select>
                     </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 col-lg-2 col-form-label">
-                            Tahun Ajaran
-                        </label>
+                    <div class="form-group">
+                        <label>Tahun Ajaran</label>
+                        <select name="tahun_ajaran_id"
+                                class="form-control" required>
+                            <option value="">-- Pilih Tahun Ajaran --</option>
 
-                        <div class="col-md-9 col-lg-6">
-                            <select name="tahun_ajaran_id"
-                                    class="form-control"
-                                    required>
-                                <option value="">
-                                    -- Pilih Tahun Ajaran --
+                            <?php while ($ta = mysqli_fetch_assoc($tahun)) { ?>
+                                <option value="<?php echo $ta['id']; ?>">
+                                    <?php echo htmlspecialchars($ta['nama']); ?>
                                 </option>
-
-                                <?php while ($ta = mysqli_fetch_assoc($tahun)) { ?>
-                                    <option value="<?php echo $ta['id']; ?>">
-                                        <?php echo htmlspecialchars($ta['nama']); ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
+                            <?php } ?>
+                        </select>
                     </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 col-lg-2 col-form-label">
-                            Kelas
-                        </label>
+                    <div class="form-group">
+                        <label>Kelas</label>
+                        <select name="kelas_id" class="form-control" required>
+                            <option value="">-- Pilih Kelas --</option>
 
-                        <div class="col-md-9 col-lg-6">
-                            <select name="kelas_id"
-                                    class="form-control"
-                                    required>
-                                <option value="">
-                                    -- Pilih Kelas --
+                            <?php while ($k = mysqli_fetch_assoc($kelas)) { ?>
+                                <option value="<?php echo $k['id']; ?>">
+                                    <?php
+                                    echo htmlspecialchars(
+                                        $k['nama'] . ' - Tingkat ' .
+                                        $k['tingkat'] . ' - ' .
+                                        $k['jurusan']
+                                    );
+                                    ?>
                                 </option>
-
-                                <?php while ($k = mysqli_fetch_assoc($kelas)) { ?>
-                                    <option value="<?php echo $k['id']; ?>">
-                                        <?php
-                                        echo htmlspecialchars(
-                                            $k['nama'] . ' - Tingkat ' .
-                                            $k['tingkat'] . ' - ' .
-                                            $k['jurusan']
-                                        );
-                                        ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
+                            <?php } ?>
+                        </select>
                     </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 col-lg-2 col-form-label">
-                            Tanggal Mulai
-                        </label>
-
-                        <div class="col-md-9 col-lg-6">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Tanggal Mulai</label>
                             <input type="date"
                                    name="tanggal_mulai"
                                    class="form-control"
                                    required>
                         </div>
-                    </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 col-lg-2 col-form-label">
-                            Tanggal Selesai
-                        </label>
-
-                        <div class="col-md-9 col-lg-6">
+                        <div class="form-group col-md-6">
+                            <label>Tanggal Selesai</label>
                             <input type="date"
                                    name="tanggal_selesai"
                                    class="form-control"
@@ -354,19 +293,13 @@ $hasil = mysqli_query($koneksi, $sql);
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 col-lg-2 col-form-label">
-                            Status
-                        </label>
-
-                        <div class="col-md-9 col-lg-6">
-                            <select name="status_aktif"
-                                    class="form-control"
-                                    required>
-                                <option value="1">Aktif</option>
-                                <option value="0">Tidak Aktif</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status_aktif"
+                                class="form-control" required>
+                            <option value="1">Aktif</option>
+                            <option value="0">Tidak Aktif</option>
+                        </select>
                     </div>
 
                     <button type="submit" class="btn btn-primary">
@@ -377,119 +310,146 @@ $hasil = mysqli_query($koneksi, $sql);
             </div>
 
             <!-- TABEL DATA PENEMPATAN SISWA -->
-            <div class="table-container">
-
-                <h3 class="mb-3">Data Penempatan Siswa</h3>
-
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover">
-
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>No</th>
-                                <th>NIS</th>
-                                <th>Nama Siswa</th>
-                                <th>Tahun Ajaran</th>
-                                <th>Kelas</th>
-                                <th>Tingkat</th>
-                                <th>Jurusan</th>
-                                <th>Tanggal Mulai</th>
-                                <th>Tanggal Selesai</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <?php
-                            $no = 1;
-
-                            while ($row = mysqli_fetch_assoc($hasil)) {
-                            ?>
-                                <tr>
-                                    <td><?php echo $no++; ?></td>
-
-                                    <td>
-                                        <?php
-                                        echo htmlspecialchars($row['nis'] ?? '-');
-                                        ?>
-                                    </td>
-
-                                    <td>
-                                        <?php
-                                        echo htmlspecialchars($row['nama_siswa'] ?? '-');
-                                        ?>
-                                    </td>
-
-                                    <td>
-                                        <?php
-                                        echo htmlspecialchars($row['tahun_ajaran'] ?? '-');
-                                        ?>
-                                    </td>
-
-                                    <td>
-                                        <?php
-                                        echo htmlspecialchars($row['nama_kelas'] ?? '-');
-                                        ?>
-                                    </td>
-
-                                    <td>
-                                        <?php
-                                        echo htmlspecialchars($row['tingkat'] ?? '-');
-                                        ?>
-                                    </td>
-
-                                    <td>
-                                        <?php
-                                        echo htmlspecialchars($row['jurusan'] ?? '-');
-                                        ?>
-                                    </td>
-
-                                    <td>
-                                        <?php
-                                        echo htmlspecialchars($row['tanggal_mulai']);
-                                        ?>
-                                    </td>
-
-                                    <td>
-                                        <?php
-                                        echo htmlspecialchars($row['tanggal_selesai']);
-                                        ?>
-                                    </td>
-
-                                    <td>
-                                        <?php
-                                        echo $row['status_aktif'] == 1
-                                            ? 'Aktif'
-                                            : 'Tidak Aktif';
-                                        ?>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-
-                            <?php if (mysqli_num_rows($hasil) == 0) { ?>
-                                <tr>
-                                    <td colspan="10" class="text-center">
-                                        Belum ada data penempatan siswa.
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                        </tbody>
-
-                    </table>
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Data Penempatan Siswa</h4>
                 </div>
 
+                <div class="card-body">
+                    <div class="table-responsive">
+
+                        <table id="tabelPenempatan"
+                               class="table table-striped table-bordered table-hover"
+                               style="width:100%">
+
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>No</th>
+                                    <th>NIS</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Tahun Ajaran</th>
+                                    <th>Kelas</th>
+                                    <th>Tingkat</th>
+                                    <th>Jurusan</th>
+                                    <th>Tanggal Mulai</th>
+                                    <th>Tanggal Selesai</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <?php
+                                $no = 1;
+
+                                if ($hasil) {
+                                    while ($row = mysqli_fetch_assoc($hasil)) {
+                                ?>
+                                    <tr>
+                                        <td><?php echo $no++; ?></td>
+
+                                        <td>
+                                            <?php echo htmlspecialchars($row['nis'] ?? '-'); ?>
+                                        </td>
+
+                                        <td>
+                                            <?php echo htmlspecialchars($row['nama_siswa'] ?? '-'); ?>
+                                        </td>
+
+                                        <td>
+                                            <?php echo htmlspecialchars($row['tahun_ajaran'] ?? '-'); ?>
+                                        </td>
+
+                                        <td>
+                                            <?php echo htmlspecialchars($row['nama_kelas'] ?? '-'); ?>
+                                        </td>
+
+                                        <td>
+                                            <?php echo htmlspecialchars($row['tingkat'] ?? '-'); ?>
+                                        </td>
+
+                                        <td>
+                                            <?php echo htmlspecialchars($row['jurusan'] ?? '-'); ?>
+                                        </td>
+
+                                        <td>
+                                            <?php echo htmlspecialchars($row['tanggal_mulai'] ?? '-'); ?>
+                                        </td>
+
+                                        <td>
+                                            <?php echo htmlspecialchars($row['tanggal_selesai'] ?? '-'); ?>
+                                        </td>
+
+                                        <td>
+                                            <?php if ($row['status_aktif'] == 1) { ?>
+                                                <span class="badge badge-success">
+                                                    Aktif
+                                                </span>
+                                            <?php } else { ?>
+                                                <span class="badge badge-secondary">
+                                                    Tidak Aktif
+                                                </span>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                <?php
+                                    }
+                                }
+                                ?>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                </div>
             </div>
 
         </main>
-        <!-- AKHIR KONTEN UTAMA -->
-
     </div>
 </div>
 
-<!-- Bootstrap JavaScript -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+<!-- jQuery: gunakan versi biasa, bukan slim -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap 4 JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+<!-- Integrasi DataTables Bootstrap 4 -->
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
+
+<!-- Inisialisasi DataTables -->
+<script>
+$(document).ready(function () {
+
+    $('#tabelPenempatan').DataTable({
+        pageLength: 10,
+        lengthMenu: [5, 10, 25, 50, 100],
+        ordering: true,
+        searching: true,
+        paging: true,
+        info: true,
+        scrollX: true,
+
+        language: {
+            lengthMenu: "Tampilkan _MENU_ data",
+            zeroRecords: "Data penempatan siswa tidak ditemukan",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            infoEmpty: "Belum ada data penempatan siswa",
+            infoFiltered: "(difilter dari _MAX_ total data)",
+            search: "Cari:",
+            paginate: {
+                first: "Pertama",
+                last: "Terakhir",
+                next: "Berikutnya",
+                previous: "Sebelumnya"
+            }
+        }
+    });
+
+});
+</script>
 
 </body>
 </html>

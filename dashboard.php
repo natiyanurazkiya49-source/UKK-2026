@@ -1,176 +1,247 @@
 <?php
-//dashboard.php
+// dashboard.php
 include 'includes/cek_session.php';
+include 'config/koneksi.php';
+
+// Menghitung jumlah siswa
+$query_siswa = mysqli_query(
+    $koneksi,
+    "SELECT COUNT(*) AS total FROM t_siswa"
+);
+
+if (!$query_siswa) {
+    die("Gagal mengambil data siswa: " . mysqli_error($koneksi));
+}
+
+$total_siswa = mysqli_fetch_assoc($query_siswa)['total'];
+
+
+// Menghitung jumlah guru yang memiliki akun ber-role guru
+$query_guru = mysqli_query(
+    $koneksi,
+    "SELECT COUNT(*) AS total
+     FROM t_guru g
+     INNER JOIN t_users u ON g.user_id = u.id
+     WHERE u.role = 'guru'"
+);
+
+if (!$query_guru) {
+    die("Gagal mengambil data guru: " . mysqli_error($koneksi));
+}
+
+$total_guru = mysqli_fetch_assoc($query_guru)['total'];
+
+
+// Menghitung jumlah kelas
+$query_kelas = mysqli_query(
+    $koneksi,
+    "SELECT COUNT(*) AS total FROM t_kelas"
+);
+
+if (!$query_kelas) {
+    die("Gagal mengambil data kelas: " . mysqli_error($koneksi));
+}
+
+$total_kelas = mysqli_fetch_assoc($query_kelas)['total'];
+
+
+// Menghitung jumlah tahun ajaran
+$query_tahun = mysqli_query(
+    $koneksi,
+    "SELECT COUNT(*) AS total FROM t_tahun_ajaran"
+);
+
+if (!$query_tahun) {
+    die("Gagal mengambil tahun ajaran: " . mysqli_error($koneksi));
+}
+
+$total_tahun = mysqli_fetch_assoc($query_tahun)['total'];
+
+
+// Menghitung jumlah catatan pelanggaran
+$query_pelanggaran = mysqli_query(
+    $koneksi,
+    "SELECT COUNT(*) AS total FROM t_pelanggaran_siswa"
+);
+
+if (!$query_pelanggaran) {
+    die("Gagal mengambil data pelanggaran: " . mysqli_error($koneksi));
+}
+
+$total_pelanggaran = mysqli_fetch_assoc($query_pelanggaran)['total'];
+
+
+// Menghitung total poin pelanggaran
+$query_poin = mysqli_query(
+    $koneksi,
+    "SELECT COALESCE(SUM(poin), 0) AS total
+     FROM t_pelanggaran_siswa"
+);
+
+if (!$query_poin) {
+    die("Gagal menghitung poin pelanggaran: " . mysqli_error($koneksi));
+}
+
+$total_poin = mysqli_fetch_assoc($query_poin)['total'];
 ?>
-<!DOCYTPE html>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Dashboard</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 </head>
 
 <body>
-
-<div class="container-fluid">
-    <div class="row">
-        <!-- SIDEBAR -->
-        <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3">
-            <h4 class="text-white mb-4">
-                My Website
-            </h4>
-            <ul class="nav nav-pills flex-column">
-                <li class="nav-item mb-2">
-                    <a href="#" class="nav-link active">
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_siswa.php" class="nav-link text-white">
-                        Data Siswa
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_guru.php" class="nav-link text-white">
-                        Data Guru
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_kelas.php" class="nav-link text-white">
-                        Kelas
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_tahun_ajaran.php" class="nav-link text-white">
-                        Tahun Ajaran
-                    </a>
-                      </li>
-                <li class="nav-item mb-2">
-                    <a href="penempatan_siswa.php" class="nav-link text-white">
-                        Penempatan Siswa
-                    </a> 
-                      </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_wali_kelas.php" class="nav-link text-white">
-                        Wali Kelas
-                    </a> 
-                      </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_pelanggaran_kategori.php" class="nav-link text-white">
-                        Pelanggaran Kategori
-                    </a> 
-                      </li>
-                <li class="nav-item mb-2">
-                    <a href="laporan.php" class="nav-link text-white">
-                        Laporan
-                    </a> 
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="aboutme.php" class="nav-link text-white">
-                        About Me
-                    </a> 
-                </li>
-                <hr class="text-secondary">
-                <li class="nav-item">
-                    <a href="logout.php" class="nav-link text-danger">
-                        Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <!-- KONTEN -->
-        <main class="col-md-9 col-lg-10 p-4">
-            <h2>Dashboard</h2>
-            <p>
-                Selamat datang di halaman dashboard.
-            </p>
-            <div class="row">
-                <!-- CARD DATA SISWA -->
-                <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                Data Siswa
-                            </h5>
-                            <h2>
-                                120
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-                <!-- CARD DATA GURU -->
-                <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                Data Guru
-                            </h5>
-                            <h2>
-                                25
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-                <!-- CARD KELAS -->
-                <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                Kelas
-                            </h5>
-                            <h2>
-                             12
-                          </h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-</div>
-    <h2>Dashboard</h2>
-    <p>
-        Selamat datang,
-        <?php echo $_SESSION['nama_user']; ?>
-    </p>
-    <p>
-        Anda berhasil login.
-    </p>
-    <a href="logout.php">Logout</a>
-</body>
-</html>
-
-<html>
-    <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <meta charset="UTF-8">
-
-        <title>dashboard - Pelanggaran Siswa</title>
-    <head>
-    <body>
-         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
-        <h1>selamat datang, <?php echo $_SESSION['name']; ?></h1>
-        <p>anda login sebagai: <?php echo $_SESSION['role']; ?></p>
+<div class="container-fluid">
+    <div class="row">
 
+        <!-- Sidebar -->
+        <?php include "layout/sidebar.php"; ?>
 
-        <ul>
-            <?php if($_SESSION['role'] == 'admin'){ ?>
-        <li><a href="kelola_guru.php">kelola guru</a></li>
-        <li><a href="kelola_siswa.php">kelola siswa</a></li>
-        <li><a href="kelola_kelas.php">kelola kelas</a></li>
-        <li><a href="kelola_tahun_ajaran.php">kelola tahun ajaran</a></li>
-        <li><a href="kelola_kategori_pelanggaran">kelola kategori pelanggaran</a></li>
-    <?php } ?>
+        <!-- Konten Dashboard -->
+        <main class="col-md-9 col-lg-10 p-4">
 
-        <?php if ($_SESSION['role'] == 'guru'){ ?>
-        <li><a href="menu3.php">menu 3</a></li>
-        <li><a href="menu4.php">menu 4</a></li>
-            <?php } ?>
-</ul>
-        <a href="logout.php">logout</a>
+            <h2>Dashboard</h2>
+
+            <p>
+                Selamat datang,
+                <strong>
+                    <?= htmlspecialchars(
+                        $_SESSION['name'] ?? 'Pengguna'
+                    ); ?>
+                </strong>
+                di halaman dashboard.
+            </p>
+
+            <div class="row">
+
+                <!-- CARD DATA SISWA -->
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm border-primary h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Data Siswa</h5>
+
+                            <h2 class="text-primary">
+                                <?= number_format((int) $total_siswa); ?>
+                            </h2>
+
+                            <a href="kelola_siswa.php"
+                               class="btn btn-primary btn-sm">
+                                Lihat Data Siswa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD DATA GURU -->
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm border-success h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Data Guru</h5>
+
+                            <h2 class="text-success">
+                                <?= number_format((int) $total_guru); ?>
+                            </h2>
+
+                            <a href="kelola_guru.php"
+                               class="btn btn-success btn-sm">
+                                Lihat Data Guru
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD DATA KELAS -->
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm border-warning h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Kelas</h5>
+
+                            <h2 class="text-warning">
+                                <?= number_format((int) $total_kelas); ?>
+                            </h2>
+
+                            <a href="kelola_kelas.php"
+                               class="btn btn-warning btn-sm">
+                                Lihat Data Kelas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD TAHUN AJARAN -->
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm border-info h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Tahun Ajaran</h5>
+
+                            <h2 class="text-info">
+                                <?= number_format((int) $total_tahun); ?>
+                            </h2>
+
+                            <a href="kelola_tahun_ajaran.php"
+                               class="btn btn-info btn-sm">
+                                Lihat Tahun Ajaran
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD PELANGGARAN -->
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm border-danger h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Catatan Pelanggaran</h5>
+
+                            <h2 class="text-danger">
+                                <?= number_format((int) $total_pelanggaran); ?>
+                            </h2>
+
+                            <a href="tindakan.php"
+                               class="btn btn-danger btn-sm">
+                                Lihat Pelanggaran
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD TOTAL POIN -->
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm border-secondary h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Poin Pelanggaran</h5>
+
+                            <h2 class="text-secondary">
+                                <?= number_format((int) $total_poin); ?>
+                            </h2>
+
+                            <a href="rekap_poin.php"
+                               class="btn btn-secondary btn-sm">
+                                Lihat Rekap Poin
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

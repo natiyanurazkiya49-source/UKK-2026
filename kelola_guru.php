@@ -1,5 +1,4 @@
 <?php
-// kelola_guru.php 
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
@@ -8,145 +7,173 @@ $hasil = mysqli_query($koneksi, $sql);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Kelola Guru</title>
-</head>
-<div class="container-fluid">
-    <div class="row">
-        <!-- SIDEBAR -->
-        <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3">
-            <h4 class="text-white mb-4">
-                My Website
-            </h4>
-            <ul class="nav nav-pills flex-column">
-                <li class="nav-item mb-2">
-                    <a href="dashboard.php" class="nav-link text-white">
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_siswa.php" class="nav-link text-white">
-                        Data Siswa
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_guru.php" class="nav-link active">
-                        Data Guru
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_kelas.php" class="nav-link text-white">
-                        Kelas
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_tahun_ajaran.php" class="nav-link text-white">
-                       Tahun Ajaran
-                    </a>
-                      </li>
-                <li class="nav-item mb-2">
-                    <a href="penempatan_siswa.php" class="nav-link text-white">
-                        Penempatan Siswa
-                    </a> 
-                      </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_wali_kelas.php" class="nav-link text-white">
-                        Wali Kelas
-                    </a> 
-                      </li>
-                <li class="nav-item mb-2">
-                    <a href="kelola_pelanggaran_kategori.php" class="nav-link text-white">
-                        Pelanggaran Kategori
-                    </a> 
-                      </li>
-                <li class="nav-item mb-2">
-                    <a href="laporan.php" class="nav-link text-white">
-                        Laporan
-                    </a> 
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="aboutme.php" class="nav-link text-white">
-                        About Me
-                    </a> 
-                </li>
-                <hr class="text-secondary">
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-danger">
-                        Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <!-- KONTEN -->
-        <main class="col-md-9 col-lg-10 p-4">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kelola Guru</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap4.min.css">
+
+    <!-- TAMBAHKAN CSS INI AGAR SIDEBAR FULL KE BAWAH -->
+    <style>
+        html, body {
+            height: 100%;
+        }
+    </style>
+</head>
+
 <body>
-     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
+<!-- Tambahkan h-100 di sini -->
+<div class="container-fluid h-100">
+<div class="row h-100">
 
-    <h1>Kelola Guru</h1>
+    <!-- SIDEBAR -->
+    <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3">
+        <h4 class="text-white mb-4">My Website</h4>
 
-    <p>
-        <a href="dashboard.php">Kembali ke Dashboard</a> |
-        <a href="tambah_guru.php">Tambah Guru</a>
-    </p>
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item mb-2">
+                <a href="dashboard.php" class="nav-link text-white">Dashboard</a>
+            </li>
 
-    <table class="table">
-  <thead class="thead-dark">
+            <li class="nav-item mb-2">
+                <a href="kelola_siswa.php" class="nav-link text-white">Data Siswa</a>
+            </li>
 
-        <tr>
-            <th>ID</th>
-            <th>NIP</th>
-            <th>Nama Guru</th>
-            <th>Email</th>
-            <th>Status Aktif</th>
-            <th>Aksi</th>
-        </tr>
+            <li class="nav-item mb-2">
+                <a href="kelola_guru.php" class="nav-link active">Data Guru</a>
+            </li>
 
-        <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
+            <li class="nav-item mb-2">
+                <a href="kelola_kelas.php" class="nav-link text-white">Kelas</a>
+            </li>
 
-        <tr>
+            <li class="nav-item mb-2">
+                <a href="kelola_tahun_ajaran.php" class="nav-link text-white">Tahun Ajaran</a>
+            </li>
 
-            <td><?php echo $row['id']; ?></td>
+            <li class="nav-item mb-2">
+                <a href="penempatan_siswa.php" class="nav-link text-white">Penempatan Siswa</a>
+            </li>
 
-            <td><?php echo $row['nip']; ?></td>
+            <li class="nav-item mb-2">
+                <a href="kelola_wali_kelas.php" class="nav-link text-white">Wali Kelas</a>
+            </li>
 
-            <td><?php echo $row['nama']; ?></td>
+            <li class="nav-item mb-2">
+                <a href="kelola_pelanggaran_kategori.php" class="nav-link text-white">Pelanggaran Kategori</a>
+            </li>
 
-            <td><?php echo $row['email']; ?></td>
+            <li class="nav-item mb-2">
+                <a href="laporan.php" class="nav-link text-white">Laporan</a>
+            </li>
 
-            <td>
-                <?php
-                if ($row['status_aktif'] == 1) {
-                    echo "Aktif";
-                } else {
-                    echo "Tidak Aktif";
-                }
-                ?>
-            </td>
+            <li class="nav-item mb-2">
+                <a href="aboutme.php" class="nav-link text-white">About Me</a>
+            </li>
 
-            <td>
-                <a href="edit_guru.php?id=<?php echo $row['id']; ?>">
-                   <button type="button" class="btn btn-warning">Edit</button>
-                </a>
+            <hr class="border-secondary">
 
-                |
+            <li class="nav-item">
+                <a href="logout.php" class="nav-link text-danger">Logout</a>
+            </li>
+        </ul>
+    </div>
 
-                <a href="hapus_guru.php?id=<?php echo $row['id']; ?>"
-                   onclick="return confirm('Yakin ingin menghapus data guru ini?');">
-                   <button type="button" class="btn btn-danger">Hapus</button>
-                </a>
-            </td>
+    <!-- KONTEN -->
+    <main class="col-md-9 col-lg-10 p-4 overflow-auto">
 
-        </tr>
+        <h2 class="mb-4">Kelola Guru</h2>
 
-        <?php } ?>
+        <p>
+            <a href="dashboard.php" class="btn btn-secondary">Kembali</a>
+            <a href="tambah_guru.php" class="btn btn-primary">+ Tambah Guru</a>
+        </p>
 
-    </table>
+        <!-- TABEL GURU -->
+        <div class="table-responsive">
+            <table id="tabelGuru" class="table table-bordered table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>NIP</th>
+                        <th>Nama Guru</th>
+                        <th>Email</th>
+                        <th>Status Aktif</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
+                    <tr>
+                        <td><?= htmlspecialchars($row['id'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($row['nip'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($row['nama'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($row['email'] ?? '') ?></td>
+                        <td>
+                            <?php
+                            if (($row['status_aktif'] ?? 0) == 1) {
+                                echo "Aktif";
+                            } else {
+                                echo "Tidak Aktif";
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <a href="edit_guru.php?id=<?= urlencode($row['id']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="hapus_guru.php?id=<?= urlencode($row['id']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus data guru ini?');">Hapus</a>
+                        </td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+</div>
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
+
+<!-- JAVASCRIPT DATATABLES -->
+<script>
+$(document).ready(function() {
+    $('#tabelGuru').DataTable({
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            infoEmpty: "Tidak ada data",
+            zeroRecords: "Data guru tidak ditemukan",
+            emptyTable: "Belum ada data guru",
+            paginate: {
+                first: "Pertama",
+                last: "Terakhir",
+                next: "Berikutnya",
+                previous: "Sebelumnya"
+            }
+        },
+        pageLength: 10,
+        lengthMenu: [5, 10, 25, 50, 100],
+        order: [[2, "asc"]]
+    });
+});
+</script>
 
 </body>
-</html> *
+</html>
