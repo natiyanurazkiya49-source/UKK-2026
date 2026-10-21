@@ -67,7 +67,7 @@ $data = mysqli_query($koneksi, "
         <!-- SIDEBAR -->
         <div class="col-md-3 col-lg-2 bg-dark sidebar p-3">
 
-            <h4 class="text-white mb-4">My Website</h4>
+            <h4 class="text-white mb-4">Pelanggaran Siswa</h4>
 
             <ul class="nav nav-pills flex-column">
 

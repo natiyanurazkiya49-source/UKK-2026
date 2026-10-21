@@ -45,7 +45,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
         <!-- SIDEBAR -->
         <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3">
-            <h4 class="text-white mb-4">My Website</h4>
+            <h4 class="text-white mb-4">Pelanggaran Siswa</h4>
 
             <ul class="nav nav-pills flex-column">
                 <li class="nav-item mb-2">
@@ -95,7 +95,7 @@ $hasil = mysqli_query($koneksi, $sql);
                     Kembali
                 </a>
 
-                <a href="tambah_walikelas.php" class="btn btn-primary">
+                <a href="tambah_wali_kelas.php" class="btn btn-primary">
                     + Tambah Wali Kelas
                 </a>
             </p>
@@ -156,7 +156,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                     Edit
                                 </a>
 
-                                <a href="hapus_walikelas.php?id=<?= urlencode($row['id']) ?>"
+                                <a href="hapus_wali_kelas.php?id=<?= urlencode($row['id']) ?>"
                                    class="btn btn-danger btn-sm"
                                    onclick="return confirm('Yakin ingin menghapus data wali kelas ini?')">
                                     Hapus

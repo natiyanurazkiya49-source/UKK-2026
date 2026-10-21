@@ -115,14 +115,14 @@ $total_poin = mysqli_fetch_assoc($query_poin)['total'];
             <h2>Dashboard</h2>
 
             <p>
-                Selamat datang,
-                <strong>
-                    <?= htmlspecialchars(
-                        $_SESSION['name'] ?? 'Pengguna'
-                    ); ?>
-                </strong>
-                di halaman dashboard.
-            </p>
+    Selamat datang,
+    <strong>
+        <?= htmlspecialchars(
+            ucfirst($_SESSION['role'] ?? 'Pengguna')
+        ); ?>
+    </strong>
+    di halaman dashboard.
+</p>
 
             <div class="row">
 
@@ -198,41 +198,25 @@ $total_poin = mysqli_fetch_assoc($query_poin)['total'];
                     </div>
                 </div>
 
-                <!-- CARD PELANGGARAN -->
-                <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm border-danger h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Catatan Pelanggaran</h5>
+               <?php if (($_SESSION['role'] ?? '') == 'guru') : ?>
+    <!-- CARD TOTAL POIN KHUSUS GURU -->
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-secondary h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Poin Pelanggaran</h5>
 
-                            <h2 class="text-danger">
-                                <?= number_format((int) $total_pelanggaran); ?>
-                            </h2>
+                <h2 class="text-secondary">
+                    <?= number_format((int) $total_poin); ?>
+                </h2>
 
-                            <a href="tindakan.php"
-                               class="btn btn-danger btn-sm">
-                                Lihat Pelanggaran
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CARD TOTAL POIN -->
-                <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm border-secondary h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Poin Pelanggaran</h5>
-
-                            <h2 class="text-secondary">
-                                <?= number_format((int) $total_poin); ?>
-                            </h2>
-
-                            <a href="rekap_poin.php"
-                               class="btn btn-secondary btn-sm">
-                                Lihat Rekap Poin
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <a href="rekap_poin.php"
+                   class="btn btn-secondary btn-sm">
+                    Lihat Rekap Poin
+                </a>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 
             </div>
 

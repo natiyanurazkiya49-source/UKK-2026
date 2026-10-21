@@ -35,7 +35,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
     <!-- SIDEBAR -->
     <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3">
-        <h4 class="text-white mb-4">My Website</h4>
+        <h4 class="text-white mb-4">Pelanggaran Siswa</h4>
 
         <ul class="nav nav-pills flex-column">
             <li class="nav-item mb-2">
