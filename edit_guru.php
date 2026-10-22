@@ -1,100 +1,115 @@
+
 <?php
-// edit_guru.php
+// tambah_pelanggaran_kategori.php
+
 include 'includes/cek_session.php';
-include 'config/koneksi.php';
-
-$id = $_GET['id'];
-
-$sql = "SELECT * FROM t_guru WHERE id = '$id'";
-$hasil = mysqli_query($koneksi, $sql);
-$data = mysqli_fetch_assoc($hasil);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
+
 <head>
-    <title>Edit Guru</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tambah Kategori Pelanggaran</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 </head>
 
 <body>
 
-    <h1>Edit Guru</h1>
+<div class="container-fluid">
+    <div class="row">
 
-    <form action="proses_edit_guru.php" method="POST">
+        <!-- SIDEBAR -->
+        <?php include 'layout/sidebar.php'; ?>
 
-        <input type="hidden" name="id" value="<?php echo $data['id']; ?>">
+        <!-- KONTEN UTAMA -->
+        <main class="col-md-9 col-lg-10 p-4">
 
-        <table>
+            <h1 class="mb-4">Tambah Kategori Pelanggaran</h1>
 
-            <tr>
-                <td>NIP</td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="nip"
-                        value="<?php echo $data['nip']; ?>" required>
-                </td>
-            </tr>
+            <div class="card shadow-sm">
 
-            <tr>
-                <td>Nama Guru</td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="nama"
-                        value="<?php echo $data['nama']; ?>" required>
-                </td>
-            </tr>
+                <div class="card-header bg-primary text-white">
+                    Form Tambah Kategori Pelanggaran
+                </div>
 
-            <tr>
-                <td>Email</td>
-                <td>:</td>
-                <td>
-                    <input type="email" name="email"
-                        value="<?php echo $data['email']; ?>" required>
-                </td>
-            </tr>
+                <div class="card-body">
 
-            <tr>
-                <td>Status Aktif</td>
-                <td>:</td>
-                <td>
-                    <select name="status_aktif" required>
+                    <form action="proses_tambah_pelanggaran_kategori.php"
+                          method="POST"
+                          id="formTambahKategori">
 
-                        <option value="1"
-                            <?php if ($data['status_aktif'] == 1) echo 'selected'; ?>>
-                            Aktif
-                        </option>
+                        <!-- NAMA KATEGORI -->
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">
+                                Nama Kategori
+                            </label>
 
-                        <option value="0"
-                            <?php if ($data['status_aktif'] == 0) echo 'selected'; ?>>
-                            Tidak Aktif
-                        </option>
+                            <input type="text"
+                                   name="nama"
+                                   id="nama"
+                                   class="form-control"
+                                   placeholder="Contoh: Pelanggaran Ringan"
+                                   maxlength="100"
+                                   required>
+                        </div>
 
-                    </select>
-                </td>
-            </tr>
+                        <!-- DESKRIPSI -->
+                        <div class="mb-3">
+                            <label for="deskripsi" class="form-label">
+                                Deskripsi
+                            </label>
 
-            <tr>
-                <td>User ID</td>
-                <td>:</td>
-                <td>
-                    <input type="number" name="user_id"
-                        value="<?php echo $data['user_id']; ?>">
-                </td>
-            </tr>
+                            <textarea name="deskripsi"
+                                      id="deskripsi"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Masukkan deskripsi kategori pelanggaran"></textarea>
+                        </div>
 
-            <tr>
-                <td colspan="3">
-                    <input type="submit" value="Update">
-                </td>
-            </tr>
+                        <!-- STATUS AKTIF -->
+                        <div class="mb-4">
+                            <label for="status_aktif" class="form-label">
+                                Status Aktif
+                            </label>
 
-        </table>
+                            <select name="status_aktif"
+                                    id="status_aktif"
+                                    class="form-select"
+                                    required>
 
-    </form>
+                                <option value="1">Aktif</option>
+                                <option value="0">Tidak Aktif</option>
 
-    <p>
-        <a href="kelola_guru.php">Kembali ke Kelola Guru</a>
-    </p>
+                            </select>
+                        </div>
+
+                        <!-- TOMBOL -->
+                        <button type="submit" class="btn btn-primary">
+                            Simpan Kategori
+                        </button>
+
+                        <a href="kelola_pelanggaran_kategori.php"
+                           class="btn btn-secondary">
+                            Kembali
+                        </a>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

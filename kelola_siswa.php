@@ -48,23 +48,19 @@ $hasil = mysqli_query($koneksi, $sql);
                 <a href="kelola_guru.php" class="nav-link text-white">Data Guru</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="kelola_kelas.php" class="nav-link text-white">Kelas</a>
+                <a href="kelola_kelas.php" class="nav-link text-white">Data Kelas</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="kelola_tahun_ajaran.php" class="nav-link text-white">Tahun Ajaran</a>
+                <a href="kelola_tahun_ajaran.php" class="nav-link text-white">Data Tahun Ajaran</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="penempatan_siswa.php" class="nav-link text-white">Penempatan Siswa</a>
+                <a href="penempatan_siswa.php" class="nav-link text-white">Data Wali Kelas</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="kelola_wali_kelas.php" class="nav-link text-white">Wali Kelas</a>
+                <a href="kelola_wali_kelas.php" class="nav-link text-white">Penempatan Siswa</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="kelola_pelanggaran_kategori.php" class="nav-link text-white">Pelanggaran Kategori</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="laporan.php" class="nav-link text-white">Laporan</a>
-            </li>
+                <a href="kelola_pelanggaran_kategori.php" class="nav-link text-white">Kategori Pelanggaran</a>
             <li class="nav-item mb-2">
                 <a href="aboutme.php" class="nav-link text-white">About Me</a>
             </li>

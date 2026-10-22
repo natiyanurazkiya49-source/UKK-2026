@@ -3,93 +3,37 @@
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-// Menghitung jumlah siswa
+// Menghitung jumlah seluruh siswa
 $query_siswa = mysqli_query(
     $koneksi,
     "SELECT COUNT(*) AS total FROM t_siswa"
 );
+$data_siswa = mysqli_fetch_assoc($query_siswa);
+$total_siswa = $data_siswa['total'] ?? 0;
 
-if (!$query_siswa) {
-    die("Gagal mengambil data siswa: " . mysqli_error($koneksi));
-}
-
-$total_siswa = mysqli_fetch_assoc($query_siswa)['total'];
-
-
-// Menghitung jumlah guru yang memiliki akun ber-role guru
+// Menghitung jumlah seluruh guru
 $query_guru = mysqli_query(
     $koneksi,
-    "SELECT COUNT(*) AS total
-     FROM t_guru g
-     INNER JOIN t_users u ON g.user_id = u.id
-     WHERE u.role = 'guru'"
+    "SELECT COUNT(*) AS total FROM t_guru"
 );
+$data_guru = mysqli_fetch_assoc($query_guru);
+$total_guru = $data_guru['total'] ?? 0;
 
-if (!$query_guru) {
-    die("Gagal mengambil data guru: " . mysqli_error($koneksi));
-}
-
-$total_guru = mysqli_fetch_assoc($query_guru)['total'];
-
-
-// Menghitung jumlah kelas
+// Menghitung jumlah seluruh kelas
 $query_kelas = mysqli_query(
     $koneksi,
     "SELECT COUNT(*) AS total FROM t_kelas"
 );
-
-if (!$query_kelas) {
-    die("Gagal mengambil data kelas: " . mysqli_error($koneksi));
-}
-
-$total_kelas = mysqli_fetch_assoc($query_kelas)['total'];
-
-
-// Menghitung jumlah tahun ajaran
-$query_tahun = mysqli_query(
-    $koneksi,
-    "SELECT COUNT(*) AS total FROM t_tahun_ajaran"
-);
-
-if (!$query_tahun) {
-    die("Gagal mengambil tahun ajaran: " . mysqli_error($koneksi));
-}
-
-$total_tahun = mysqli_fetch_assoc($query_tahun)['total'];
-
-
-// Menghitung jumlah catatan pelanggaran
-$query_pelanggaran = mysqli_query(
-    $koneksi,
-    "SELECT COUNT(*) AS total FROM t_pelanggaran_siswa"
-);
-
-if (!$query_pelanggaran) {
-    die("Gagal mengambil data pelanggaran: " . mysqli_error($koneksi));
-}
-
-$total_pelanggaran = mysqli_fetch_assoc($query_pelanggaran)['total'];
-
-
-// Menghitung total poin pelanggaran
-$query_poin = mysqli_query(
-    $koneksi,
-    "SELECT COALESCE(SUM(poin), 0) AS total
-     FROM t_pelanggaran_siswa"
-);
-
-if (!$query_poin) {
-    die("Gagal menghitung poin pelanggaran: " . mysqli_error($koneksi));
-}
-
-$total_poin = mysqli_fetch_assoc($query_poin)['total'];
+$data_kelas = mysqli_fetch_assoc($query_kelas);
+$total_kelas = $data_kelas['total'] ?? 0;
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dashboard</title>
 
@@ -99,30 +43,22 @@ $total_poin = mysqli_fetch_assoc($query_poin)['total'];
 </head>
 
 <body>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
 <div class="container-fluid">
     <div class="row">
 
-        <!-- Sidebar -->
-        <?php include "layout/sidebar.php"; ?>
+        <!-- SIDEBAR -->
+        <?php include 'layout/sidebar.php'; ?>
 
-        <!-- Konten Dashboard -->
+        <!-- KONTEN UTAMA -->
         <main class="col-md-9 col-lg-10 p-4">
 
-            <h2>Dashboard</h2>
+            <h2 class="mb-2">Dashboard</h2>
 
-            <p>
-    Selamat datang,
-    <strong>
-        <?= htmlspecialchars(
-            ucfirst($_SESSION['role'] ?? 'Pengguna')
-        ); ?>
-    </strong>
-    di halaman dashboard.
-</p>
+            <p class="text-muted mb-4">
+                Selamat datang di halaman dashboard.
+                Berikut ringkasan data sekolah saat ini.
+            </p>
 
             <div class="row">
 
@@ -130,16 +66,24 @@ $total_poin = mysqli_fetch_assoc($query_poin)['total'];
                 <div class="col-md-4 mb-3">
                     <div class="card shadow-sm border-primary h-100">
                         <div class="card-body">
-                            <h5 class="card-title">Data Siswa</h5>
 
-                            <h2 class="text-primary">
-                                <?= number_format((int) $total_siswa); ?>
+                            <h5 class="card-title text-primary">
+                                Data Siswa
+                            </h5>
+
+                            <h2 class="fw-bold">
+                                <?= number_format((int)$total_siswa, 0, ',', '.') ?>
                             </h2>
+
+                            <p class="text-muted mb-3">
+                                Total siswa terdaftar
+                            </p>
 
                             <a href="kelola_siswa.php"
                                class="btn btn-primary btn-sm">
-                                Lihat Data Siswa
+                                Kelola Siswa
                             </a>
+
                         </div>
                     </div>
                 </div>
@@ -148,16 +92,24 @@ $total_poin = mysqli_fetch_assoc($query_poin)['total'];
                 <div class="col-md-4 mb-3">
                     <div class="card shadow-sm border-success h-100">
                         <div class="card-body">
-                            <h5 class="card-title">Data Guru</h5>
 
-                            <h2 class="text-success">
-                                <?= number_format((int) $total_guru); ?>
+                            <h5 class="card-title text-success">
+                                Data Guru
+                            </h5>
+
+                            <h2 class="fw-bold">
+                                <?= number_format((int)$total_guru, 0, ',', '.') ?>
                             </h2>
+
+                            <p class="text-muted mb-3">
+                                Total guru terdaftar
+                            </p>
 
                             <a href="kelola_guru.php"
                                class="btn btn-success btn-sm">
-                                Lihat Data Guru
+                                Kelola Guru
                             </a>
+
                         </div>
                     </div>
                 </div>
@@ -166,65 +118,35 @@ $total_poin = mysqli_fetch_assoc($query_poin)['total'];
                 <div class="col-md-4 mb-3">
                     <div class="card shadow-sm border-warning h-100">
                         <div class="card-body">
-                            <h5 class="card-title">Kelas</h5>
 
-                            <h2 class="text-warning">
-                                <?= number_format((int) $total_kelas); ?>
+                            <h5 class="card-title text-warning">
+                                Data Kelas
+                            </h5>
+
+                            <h2 class="fw-bold">
+                                <?= number_format((int)$total_kelas, 0, ',', '.') ?>
                             </h2>
+
+                            <p class="text-muted mb-3">
+                                Total kelas terdaftar
+                            </p>
 
                             <a href="kelola_kelas.php"
                                class="btn btn-warning btn-sm">
-                                Lihat Data Kelas
+                                Kelola Kelas
                             </a>
+
                         </div>
                     </div>
                 </div>
-
-                <!-- CARD TAHUN AJARAN -->
-                <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm border-info h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Tahun Ajaran</h5>
-
-                            <h2 class="text-info">
-                                <?= number_format((int) $total_tahun); ?>
-                            </h2>
-
-                            <a href="kelola_tahun_ajaran.php"
-                               class="btn btn-info btn-sm">
-                                Lihat Tahun Ajaran
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-               <?php if (($_SESSION['role'] ?? '') == 'guru') : ?>
-    <!-- CARD TOTAL POIN KHUSUS GURU -->
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm border-secondary h-100">
-            <div class="card-body">
-                <h5 class="card-title">Total Poin Pelanggaran</h5>
-
-                <h2 class="text-secondary">
-                    <?= number_format((int) $total_poin); ?>
-                </h2>
-
-                <a href="rekap_poin.php"
-                   class="btn btn-secondary btn-sm">
-                    Lihat Rekap Poin
-                </a>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
 
             </div>
 
         </main>
+
     </div>
 </div>
 
-<!-- Bootstrap 5 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

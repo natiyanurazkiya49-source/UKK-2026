@@ -1,4 +1,3 @@
-
 <?php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
@@ -21,6 +20,17 @@ $hasil = mysqli_query($koneksi, $sql);
     <!-- CSS DataTables -->
     <link rel="stylesheet"
     href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap4.min.css">
+
+    <style>
+        /* Tambahan CSS agar tinggi halaman dan sidebar full ke bawah */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        .container-fluid, .row {
+            height: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -28,7 +38,7 @@ $hasil = mysqli_query($koneksi, $sql);
 <div class="row">
 
     <!-- SIDEBAR -->
-    <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3">
+    <div class="col-md-3 col-lg-2 bg-dark p-3">
         <h4 class="text-white mb-4">Pelanggaran Siswa</h4>
 
         <ul class="nav nav-pills flex-column">
@@ -42,28 +52,25 @@ $hasil = mysqli_query($koneksi, $sql);
                 <a href="kelola_guru.php" class="nav-link text-white">Data Guru</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="kelola_kelas.php" class="nav-link text-white">Kelas</a>
+                <a href="kelola_kelas.php" class="nav-link text-white">Data Kelas</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="kelola_tahun_ajaran.php" class="nav-link text-white">Tahun Ajaran</a>
+                <a href="kelola_tahun_ajaran.php" class="nav-link text-white">Data Tahun Ajaran</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="kelola_wali_kelas.php" class="nav-link text-white">Data Wali Kelas</a>
             </li>
             <li class="nav-item mb-2">
                 <a href="penempatan_siswa.php" class="nav-link text-white">Penempatan Siswa</a>
             </li>
             <li class="nav-item mb-2">
-                <a href="kelola_wali_kelas.php" class="nav-link text-white">Wali Kelas</a>
-            </li>
-            <li class="nav-item mb-2">
                 <a href="kelola_pelanggaran_kategori.php"
-                   class="nav-link active">Pelanggaran Kategori</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="laporan.php" class="nav-link text-white">Laporan</a>
+                   class="nav-link active">Kategori Pelanggaran</a>
             </li>
             <li class="nav-item mb-2">
                 <a href="aboutme.php" class="nav-link text-white">About Me</a>
             </li>
-            <hr>
+            <hr class="bg-secondary">
             <li class="nav-item">
                 <a href="logout.php" class="nav-link text-danger">Logout</a>
             </li>
@@ -71,7 +78,7 @@ $hasil = mysqli_query($koneksi, $sql);
     </div>
 
     <!-- KONTEN -->
-    <main class="col-md-9 col-lg-10 p-4">
+    <main class="col-md-9 col-lg-10 p-4" style="overflow-y: auto; height: 100%;">
 
         <h2 class="mb-4">Kelola Kategori Pelanggaran</h2>
 
