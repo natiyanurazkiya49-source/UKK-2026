@@ -1,197 +1,195 @@
 <?php
+// kelola_pelanggaran_kategori.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
 $sql = "SELECT * FROM t_pelanggaran_kategori ORDER BY id DESC";
 $hasil = mysqli_query($koneksi, $sql);
+
+if (!$hasil) {
+    die("Query gagal: " . mysqli_error($koneksi));
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Kelola Kategori Pelanggaran</title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
-    <!-- CSS DataTables -->
-    <link rel="stylesheet"
-    href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap4.min.css">
-
-    <style>
-        /* Tambahan CSS agar tinggi halaman dan sidebar full ke bawah */
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-        .container-fluid, .row {
-            height: 100%;
-        }
-    </style>
+    <!-- DataTables Bootstrap 5 -->
+    <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css"
+          rel="stylesheet">
 </head>
 
 <body>
+
 <div class="container-fluid">
-<div class="row">
+    <div class="row">
 
-    <!-- SIDEBAR -->
-    <div class="col-md-3 col-lg-2 bg-dark p-3">
-        <h4 class="text-white mb-4">Pelanggaran Siswa</h4>
+        <?php include 'layout/sidebar.php'; ?>
 
-        <ul class="nav nav-pills flex-column">
-            <li class="nav-item mb-2">
-                <a href="dashboard.php" class="nav-link text-white">Dashboard</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="kelola_siswa.php" class="nav-link text-white">Data Siswa</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="kelola_guru.php" class="nav-link text-white">Data Guru</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="kelola_kelas.php" class="nav-link text-white">Data Kelas</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="kelola_tahun_ajaran.php" class="nav-link text-white">Data Tahun Ajaran</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="kelola_wali_kelas.php" class="nav-link text-white">Data Wali Kelas</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="penempatan_siswa.php" class="nav-link text-white">Penempatan Siswa</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="kelola_pelanggaran_kategori.php"
-                   class="nav-link active">Kategori Pelanggaran</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="aboutme.php" class="nav-link text-white">About Me</a>
-            </li>
-            <hr class="bg-secondary">
-            <li class="nav-item">
-                <a href="logout.php" class="nav-link text-danger">Logout</a>
-            </li>
-        </ul>
+        <!-- KONTEN -->
+        <main class="col-md-9 col-lg-10 p-4">
+
+            <h2>Kelola Pelanggaran Kategori</h2>
+            <p>Selamat datang di halaman Pelanggaran Kategori.</p>
+
+            <div class="mb-3">
+                <a href="dashboard.php" class="btn btn-secondary">
+                    Kembali ke Dashboard
+                </a>
+
+                <a href="tambah_pelanggaran_kategori.php"
+                   class="btn btn-primary">
+                    Tambah Kategori Pelanggaran
+                </a>
+            </div>
+
+            <!-- TABEL KATEGORI PELANGGARAN -->
+            <div class="table-responsive">
+
+                <table id="tabelKategori"
+                       class="table table-striped table-bordered table-hover">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Kategori</th>
+                            <th>Deskripsi</th>
+                            <th>Status Aktif</th>
+                            <th>Dibuat</th>
+                            <th>Diubah</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <?php
+                    $no = 1;
+
+                    while ($row = mysqli_fetch_assoc($hasil)) {
+                    ?>
+
+                        <tr>
+                            <td><?php echo $no++; ?></td>
+
+                            <td>
+                                <?php echo htmlspecialchars($row['nama'] ?? ''); ?>
+                            </td>
+
+                            <td>
+                                <?php echo htmlspecialchars($row['deskripsi'] ?? ''); ?>
+                            </td>
+
+                            <td>
+                                <?php
+                                echo ($row['status_aktif'] == 1)
+                                    ? 'Aktif'
+                                    : 'Tidak Aktif';
+                                ?>
+                            </td>
+
+                            <td>
+                                <?php echo htmlspecialchars($row['created_at'] ?? ''); ?>
+                            </td>
+
+                            <td>
+                                <?php echo htmlspecialchars($row['updated_at'] ?? ''); ?>
+                            </td>
+
+                            <td>
+                                <a href="edit_pelanggaran_kategori.php?id=<?php echo urlencode($row['id']); ?>"
+                                   class="btn btn-primary btn-sm">
+                                    Edit
+                                </a>
+
+                                <a href="hapus_pelanggaran_kategori.php?id=<?php echo urlencode($row['id']); ?>"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Yakin ingin menghapus kategori pelanggaran ini?');">
+                                    Hapus
+                                </a>
+                            </td>
+                        </tr>
+
+                    <?php } ?>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </main>
     </div>
-
-    <!-- KONTEN -->
-    <main class="col-md-9 col-lg-10 p-4" style="overflow-y: auto; height: 100%;">
-
-        <h2 class="mb-4">Kelola Kategori Pelanggaran</h2>
-
-        <p>
-            <a href="dashboard.php" class="btn btn-secondary">
-                Kembali ke Dashboard
-            </a>
-
-            <a href="tambah_pelanggaran_kategori.php"
-               class="btn btn-primary">
-                + Tambah Kategori
-            </a>
-        </p>
-
-        <div class="table-responsive">
-        <table id="tabelPelanggaran"
-               class="table table-bordered table-striped table-hover">
-
-            <thead class="thead-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Nama Kategori</th>
-                    <th>Deskripsi</th>
-                    <th>Status Aktif</th>
-                    <th>Dibuat</th>
-                    <th>Diubah</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-
-            <tbody>
-            <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
-                <tr>
-                    <td>
-                        <?= htmlspecialchars($row['id']) ?>
-                    </td>
-
-                    <td>
-                        <?= htmlspecialchars($row['nama']) ?>
-                    </td>
-
-                    <td>
-                        <?= htmlspecialchars($row['deskripsi'] ?? '') ?>
-                    </td>
-
-                    <td>
-                        <?php if ($row['status_aktif'] == 1) { ?>
-                            <span class="badge badge-success">Aktif</span>
-                        <?php } else { ?>
-                            <span class="badge badge-secondary">Tidak Aktif</span>
-                        <?php } ?>
-                    </td>
-
-                    <td>
-                        <?= htmlspecialchars($row['created_at'] ?? '-') ?>
-                    </td>
-
-                    <td>
-                        <?= htmlspecialchars($row['updated_at'] ?? '-') ?>
-                    </td>
-
-                    <td>
-                        <a href="edit_pelanggaran_kategori.php?id=<?= urlencode($row['id']) ?>"
-                           class="btn btn-warning btn-sm">
-                            Edit
-                        </a>
-
-                        <a href="hapus_pelanggaran_kategori.php?id=<?= urlencode($row['id']) ?>"
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirm('Yakin ingin menghapus kategori pelanggaran ini?')">
-                            Hapus
-                        </a>
-                    </td>
-                </tr>
-            <?php } ?>
-            </tbody>
-
-        </table>
-        </div>
-
-    </main>
-</div>
 </div>
 
-<!-- JavaScript jQuery -->
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<!-- JavaScript DataTables -->
-<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
+<!-- Mengaktifkan DataTables -->
 <script>
-$(document).ready(function() {
-    $('#tabelPelanggaran').DataTable({
-        pageLength: 10,
-        lengthMenu: [5, 10, 25, 50, 100],
-        ordering: true,
-        searching: true,
+$(document).ready(function () {
+
+    $('#tabelKategori').DataTable({
+
         language: {
             search: "Cari:",
             lengthMenu: "Tampilkan _MENU_ data",
             info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-            infoEmpty: "Tidak ada data",
-            zeroRecords: "Data tidak ditemukan",
-            emptyTable: "Belum ada data kategori pelanggaran",
+            infoEmpty: "Tidak ada data kategori",
+            zeroRecords: "Data kategori tidak ditemukan",
+            emptyTable: "Belum ada data kategori",
+
             paginate: {
                 first: "Pertama",
                 last: "Terakhir",
                 next: "Berikutnya",
                 previous: "Sebelumnya"
             }
+        },
+
+        pageLength: 10,
+
+        lengthMenu: [5, 10, 25, 50, 100],
+
+        // Nomor urut dan kolom Aksi tidak dapat diurutkan
+        columnDefs: [
+            {
+                targets: [0, 6],
+                orderable: false,
+                searchable: false
+            }
+        ],
+
+        // Mengurutkan berdasarkan ID terbaru melalui hasil query
+        order: [],
+
+        // Nomor otomatis menyesuaikan halaman DataTables
+        drawCallback: function () {
+            var api = this.api();
+            var info = api.page.info();
+
+            api.column(0, {
+                page: 'current'
+            }).nodes().each(function (cell, i) {
+                cell.innerHTML = info.start + i + 1;
+            });
         }
+
     });
+
 });
 </script>
 

@@ -5,7 +5,7 @@ include 'config/koneksi.php';
 
 $name ='administrator';
 $email ='admin@gmail.com';
-$password = password_hash('password', PASSWORD_DEFAULT);
+$password = password_hash('admin123', PASSWORD_DEFAULT);
 $role = 'admin';
 
 $sql = "INSERT INTO t_users(name, email, password, role)";

@@ -1,4 +1,4 @@
-    <?php
+<?php
 $current_page = basename($_SERVER['PHP_SELF']);
 
 if ($_SESSION['role'] === "admin") {
@@ -67,9 +67,16 @@ if ($_SESSION['role'] === "admin") {
                 </a>
             </li>
 
+             <li class="nav-item mb-2">
+                <a href="Laporan.php"
+                   class="nav-link <?= ($current_page == 'Laporan.php') ? 'active' : 'text-white' ?>">
+                    Laporan
+                </a>
+            </li>
+
             <li class="nav-item mb-2">
                 <a href="aboutme.php"
-                   class="nav-link <?= ($current_page == 'aboutme.php') ? 'active' : 'text-white' ?>">
+                   class="nav-link <?= ($current_page == 'about_me.php') ? 'active' : 'text-white' ?>">
                     About Me
                 </a>
             </li>

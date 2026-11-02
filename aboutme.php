@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 include "config/koneksi.php";
@@ -8,243 +9,321 @@ $sekolah = "SMK Muhammadiyah Tasikmalaya";
 $jurusan = "Rekayasa Perangkat Lunak";
 $hobi = "Mendengarkan Musik";
 $cita_cita = "PRAMUGARI";
+
+$foto = "assets/foto-profil.jpg";
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tentang Saya - Profil</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: #2d3748;
-        }
+<title>My Profile</title>
 
-        .container {
-            width: 100%;
-            max-width: 650px;
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.07);
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        /* Header Card */
-        .profile-header {
-            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-            padding: 40px 30px 30px;
-            text-align: center;
-            color: white;
-            position: relative;
-        }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-        .avatar {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background-color: #ffffff;
-            color: #4f46e5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            font-weight: 700;
-            margin: 0 auto 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            border: 4px solid rgba(255, 255, 255, 0.3);
-        }
+<style>
 
-        .profile-header h2 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
 
-        .profile-header .tagline {
-            font-size: 14px;
-            opacity: 0.9;
-            font-weight: 500;
-        }
+body {
+    background: #f5f1eb;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+}
 
-        /* Body Content */
-        .profile-body {
-            padding: 30px;
-        }
+/* Card */
+.profile-card {
+    width: 100%;
+    max-width: 750px;
+    background: white;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 8px 30px rgba(80, 60, 40, 0.08);
+}
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #eee9e2;
+}
 
-        @media (max-width: 480px) {
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+.profile-header img {
+    width: 115px;
+    height: 115px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #eee5d9;
+}
 
-        .info-card {
-            background: #f8fafc;
-            padding: 15px 18px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
+.profile-name h2 {
+    font-size: 23px;
+    color: #44382e;
+    margin-bottom: 7px;
+}
 
-        .info-card.full-width {
-            grid-column: span 2;
-        }
+.profile-name p {
+    color: #9b8877;
+    font-size: 13px;
+}
 
-        @media (max-width: 480px) {
-            .info-card.full-width {
-                grid-column: span 1;
-            }
-        }
+.status {
+    display: inline-block;
+    background: #f3eee6;
+    color: #8a725b;
+    padding: 6px 13px;
+    border-radius: 20px;
+    font-size: 11px;
+    margin-top: 10px;
+}
 
-        .info-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #64748b;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
+/* Content */
+.content {
+    padding-top: 25px;
+}
 
-        .info-value {
-            font-size: 15px;
-            color: #1e293b;
-            font-weight: 600;
-        }
+.title {
+    font-size: 16px;
+    color: #44382e;
+    margin-bottom: 18px;
+}
 
-        .bio-section {
-            background: #fff8f1;
-            border-left: 4px solid #f97316;
-            padding: 18px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 13px;
+}
 
-        .bio-section h3 {
-            font-size: 16px;
-            color: #c2410c;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+.info-item {
+    padding: 15px;
+    background: #faf8f5;
+    border-radius: 10px;
+    border: 1px solid #f0ebe4;
+}
 
-        .bio-section p {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #475569;
-        }
+.info-item span {
+    display: block;
+    font-size: 11px;
+    color: #a18e7b;
+    margin-bottom: 5px;
+}
 
-        /* Action Button */
-        .action-area {
-            text-align: center;
-        }
+.info-item strong {
+    font-size: 13px;
+    color: #514337;
+    font-weight: 600;
+}
 
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 28px;
-            background-color: #0f172a;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
+/* Description */
+.description {
+    margin-top: 25px;
+    padding: 20px;
+    background: #f8f4ee;
+    border-radius: 12px;
+}
 
-        .btn-back:hover {
-            background-color: #334155;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+.description h3 {
+    font-size: 15px;
+    color: #514337;
+    margin-bottom: 9px;
+}
+
+.description p {
+    font-size: 12px;
+    color: #897969;
+    line-height: 1.8;
+}
+
+/* Dream */
+.dream {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px;
+    border: 1px solid #eee6dc;
+    border-radius: 12px;
+}
+
+.dream i {
+    font-size: 23px;
+    color: #ad8b68;
+}
+
+.dream span {
+    display: block;
+    font-size: 11px;
+    color: #a18e7b;
+}
+
+.dream strong {
+    font-size: 14px;
+    color: #514337;
+}
+
+/* Button */
+.button-area {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.btn-back {
+    display: inline-block;
+    padding: 11px 25px;
+    background: #78634f;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-back:hover {
+    background: #574532;
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media(max-width: 550px) {
+    .profile-card {
+        padding: 23px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-name h2 {
+        font-size: 20px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
 </head>
+
 <body>
 
-    <div class="container">
-        <!-- Header Profil -->
-        <div class="profile-header">
-            <div class="avatar">
-                <?php echo strtoupper(substr($nama, 0, 1)); ?>
-            </div>
-            <h2><?php echo $nama; ?></h2>
-            <p class="tagline"><?php echo $jurusan; ?> &bull; <?php echo $kelas; ?></p>
-        </div>
+<div class="profile-card">
 
-        <!-- Detail Informasi -->
-        <div class="profile-body">
-            <div class="info-grid">
-                <div class="info-card full-width">
-                    <div class="info-label">Sekolah</div>
-                    <div class="info-value"><?php echo $sekolah; ?></div>
-                </div>
+    <!-- Foto dan Nama -->
+    <div class="profile-header">
 
-                <div class="info-card">
-                    <div class="info-label">Kelas</div>
-                    <div class="info-value"><?php echo $kelas; ?></div>
-                </div>
+        <img
+            src="<?php echo htmlspecialchars($foto); ?>"
+            alt="Foto Profil"
+            onerror="this.src='img/natiya.jpg'">
+        <div class="profile-name">
+            <h2><?php echo htmlspecialchars($nama); ?></h2>
 
-                <div class="info-card">
-                    <div class="info-label">Jurusan</div>
-                    <div class="info-value"><?php echo $jurusan; ?></div>
-                </div>
+            <p><?php echo htmlspecialchars($jurusan); ?></p>
 
-                <div class="info-card">
-                    <div class="info-label">Hobi</div>
-                    <div class="info-value"><?php echo $hobi; ?></div>
-                </div>
-
-                <div class="info-card">
-                    <div class="info-label">Cita-cita</div>
-                    <div class="info-value" style="color: #4f46e5;"><?php echo $cita_cita; ?></div>
-                </div>
-            </div>
-
-            <!-- Deskripsi Diri -->
-            <div class="bio-section">
-                <h3>Deskripsi Diri</h3>
-                <p>
-                    Saya adalah seorang pelajar yang sedang belajar Rekayasa Perangkat Lunak. 
-                    Saya senang mempelajari teknologi dan membuat website. Saya ingin terus 
-                    belajar agar bisa berkembang dan meraih cita-cita saya.
-                </p>
-            </div>
-
-            <!-- Tombol Navigasi -->
-            <div class="action-area">
-                <a href="dashboard.php" class="btn-back">
-                    &larr; Kembali ke Dashboard
-                </a>
+            <div class="status">
+                <i class="fas fa-graduation-cap"></i>
+                Pelajar <?php echo htmlspecialchars($kelas); ?>
             </div>
         </div>
+
     </div>
+
+    <!-- Informasi -->
+    <div class="content">
+
+        <h3 class="title">Informasi Pribadi</h3>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <span>Nama Lengkap</span>
+                <strong><?php echo htmlspecialchars($nama); ?></strong>
+            </div>
+
+            <div class="info-item">
+                <span>Sekolah</span>
+                <strong><?php echo htmlspecialchars($sekolah); ?></strong>
+            </div>
+
+            <div class="info-item">
+                <span>Kelas</span>
+                <strong><?php echo htmlspecialchars($kelas); ?></strong>
+            </div>
+
+            <div class="info-item">
+                <span>Jurusan</span>
+                <strong><?php echo htmlspecialchars($jurusan); ?></strong>
+            </div>
+
+            <div class="info-item">
+                <span>Hobi</span>
+                <strong><?php echo htmlspecialchars($hobi); ?></strong>
+            </div>
+
+            <div class="info-item">
+                <span>Cita-cita</span>
+                <strong><?php echo htmlspecialchars($cita_cita); ?></strong>
+            </div>
+
+        </div>
+
+        <!-- Tentang Saya -->
+        <div class="description">
+
+            <h3>Tentang Saya</h3>
+
+            <p>
+                Saya merupakan pelajar jurusan Rekayasa Perangkat Lunak
+                yang memiliki semangat untuk belajar dan mengembangkan
+                kemampuan di bidang teknologi. Saya senang mempelajari
+                hal baru dan ingin terus berkembang untuk meraih cita-cita.
+            </p>
+
+        </div>
+
+        <!-- Cita-cita -->
+        <div class="dream">
+
+            <i class="fas fa-plane"></i>
+
+            <div>
+                <span>My Future Dream</span>
+                <strong><?php echo htmlspecialchars($cita_cita); ?></strong>
+            </div>
+
+        </div>
+
+        <!-- Tombol -->
+        <div class="button-area">
+
+            <a href="dashboard.php" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Kembali ke Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>
