@@ -1,39 +1,42 @@
 <?php
-// hapus_siswa.php
-session_start();
-
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-$id = $_GET['id'];
+if (isset($_GET['id'])) {
 
-// Ambil nama siswa sebelum dihapus
-$cek = mysqli_query(
-    $koneksi,
-    "SELECT nama FROM t_siswa WHERE id = '$id'"
-);
+    $id = intval($_GET['id']);
 
-$data = mysqli_fetch_assoc($cek);
+    mysqli_begin_transaction($koneksi);
 
-// Hapus data siswa
-$sql = "DELETE FROM t_siswa WHERE id = '$id'";
+    try {
 
-if (mysqli_query($koneksi, $sql)) {
+        // Hapus data penempatan kelas siswa
+        mysqli_query($koneksi, "
+            DELETE FROM t_kelas_siswa
+            WHERE siswa_id = $id
+        ");
 
-    $id_user = $_SESSION['id_user'];
-    $waktu = date('Y-m-d H:i:s');
+        // Hapus data siswa
+        mysqli_query($koneksi, "
+            DELETE FROM t_siswa
+            WHERE id = $id
+        ");
 
-    $aktivitas = "hapus siswa: " . $data['nama'];
+        mysqli_commit($koneksi);
 
-    // Simpan aktivitas ke tabel log
-    $log = "INSERT INTO tbl_log
-            (id_user, aktivitas, waktu)
-            VALUES
-            ('$id_user', '$aktivitas', '$waktu')";
+        echo "<script>
+            alert('Data siswa berhasil dihapus!');
+            window.location='kelola_siswa.php';
+        </script>";
 
-    mysqli_query($koneksi, $log);
+    } catch (mysqli_sql_exception $e) {
+
+        mysqli_rollback($koneksi);
+
+        echo "<script>
+            alert('Data siswa gagal dihapus karena masih memiliki relasi dengan tabel lain!');
+            window.location='kelola_siswa.php';
+        </script>";
+    }
 }
-
-header('Location: kelola_siswa.php');
-exit;
 ?>

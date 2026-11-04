@@ -131,10 +131,11 @@ $hasil = mysqli_query($koneksi, $sql);
                                     <td>
                                         <div class="d-flex gap-2">
 
-                                            <a href="edit_siswa.php?id=<?= urlencode($row['id']) ?>"
-                                               class="btn btn-warning btn-sm">
-                                                Edit
-                                            </a>
+                                             <a href="edit_siswa.php?id=<?php
+                                               echo urlencode($row['id']);
+                                             ?>" class="btn btn-primary btn-sm mb-1">
+                                              Edit
+                                             </a>
 
                                             <a href="hapus_siswa.php?id=<?= urlencode($row['id']) ?>"
                                                class="btn btn-danger btn-sm"

@@ -70,6 +70,26 @@ include 'includes/cek_session.php';
                                    required>
                         </div>
 
+                                                <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password"
+                                   name="password"
+                                   id="password"
+                                   class="form-control"
+                                   autocomplete="new-password"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Konfirmasi Password</label>
+                            <input type="password"
+                                   name="konfirmasi_password"
+                                   id="konfirmasi_password"
+                                   class="form-control"
+                                   autocomplete="new-password"
+                                   required>
+                        </div>
+
                         <div class="mb-4">
                             <label for="status_aktif" class="form-label">
                                 Status Aktif
@@ -83,7 +103,6 @@ include 'includes/cek_session.php';
                                 <option value="0">Tidak Aktif</option>
                             </select>
                         </div>
-
                         <button type="submit" class="btn btn-primary">
                             Simpan Guru
                         </button>

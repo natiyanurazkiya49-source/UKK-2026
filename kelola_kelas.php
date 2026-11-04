@@ -48,7 +48,7 @@ if (!$hasil) {
                 </a>
 
                 <a href="tambah_kelas.php" class="btn btn-primary">
-                    Tambah Kelas
+                    + Tambah Kelas
                 </a>
             </div>
 

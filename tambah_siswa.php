@@ -112,28 +112,7 @@ include 'includes/cek_session.php';
                                       rows="4"
                                       required></textarea>
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password"
-                                   name="password"
-                                   id="password"
-                                   class="form-control"
-                                   autocomplete="new-password"
-                                   required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Konfirmasi Password</label>
-                            <input type="password"
-                                   name="konfirmasi_password"
-                                   id="konfirmasi_password"
-                                   class="form-control"
-                                   autocomplete="new-password"
-                                   required>
-                        </div>
-
-                        <div class="mb-4">
+                       <div class="mb-4">
                             <label class="form-label">Status Aktif</label>
                             <select name="status_aktif"
                                     class="form-select"

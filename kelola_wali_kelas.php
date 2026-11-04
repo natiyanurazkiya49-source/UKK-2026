@@ -57,7 +57,7 @@ if (!$hasil) {
                 </a>
 
                 <a href="tambah_wali_kelas.php" class="btn btn-primary">
-                    Tambah Wali Kelas
+                    + Tambah Wali Kelas
                 </a>
             </div>
 

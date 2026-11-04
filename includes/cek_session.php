@@ -1,9 +1,11 @@
 <?php
-// includes/cek_session.php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-if (!isset($_SESSION[ 'login']) || $_SESSION[ 'login'] !== true) {
-    header('location: login.php');
+// Cek apakah user sudah login
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
     exit;
 }
 ?>

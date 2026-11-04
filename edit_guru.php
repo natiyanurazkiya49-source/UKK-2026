@@ -1,8 +1,24 @@
-
 <?php
-// tambah_pelanggaran_kategori.php
-
+// edit_guru.php
 include 'includes/cek_session.php';
+include 'config/koneksi.php';
+
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    die("ID guru tidak valid.");
+}
+
+$id = (int) $_GET['id'];
+
+$stmt = mysqli_prepare($koneksi, "SELECT * FROM t_guru WHERE id = ?");
+mysqli_stmt_bind_param($stmt, "i", $id);
+mysqli_stmt_execute($stmt);
+
+$hasil = mysqli_stmt_get_result($stmt);
+$data = mysqli_fetch_assoc($hasil);
+
+if (!$data) {
+    die("Data guru tidak ditemukan.");
+}
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +28,7 @@ include 'includes/cek_session.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Tambah Kategori Pelanggaran</title>
+    <title>Edit Guru</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -30,71 +46,75 @@ include 'includes/cek_session.php';
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 col-lg-10 p-4">
 
-            <h1 class="mb-4">Tambah Kategori Pelanggaran</h1>
+            <h1 class="mb-4">Edit Guru</h1>
 
             <div class="card shadow-sm">
 
                 <div class="card-header bg-primary text-white">
-                    Form Tambah Kategori Pelanggaran
+                    Form Edit Guru
                 </div>
 
                 <div class="card-body">
 
-                    <form action="proses_tambah_pelanggaran_kategori.php"
+                    <form action="proses_edit_guru.php"
                           method="POST"
-                          id="formTambahKategori">
+                          id="formEditGuru">
 
-                        <!-- NAMA KATEGORI -->
+                        <input type="hidden"
+                               name="id"
+                               value="<?= htmlspecialchars($data['id']) ?>">
+
                         <div class="mb-3">
-                            <label for="nama" class="form-label">
-                                Nama Kategori
-                            </label>
-
+                            <label class="form-label">NIP</label>
                             <input type="text"
-                                   name="nama"
-                                   id="nama"
+                                   name="nip"
                                    class="form-control"
-                                   placeholder="Contoh: Pelanggaran Ringan"
-                                   maxlength="100"
+                                   value="<?= htmlspecialchars($data['nip'] ?? '') ?>"
                                    required>
                         </div>
 
-                        <!-- DESKRIPSI -->
                         <div class="mb-3">
-                            <label for="deskripsi" class="form-label">
-                                Deskripsi
-                            </label>
-
-                            <textarea name="deskripsi"
-                                      id="deskripsi"
-                                      class="form-control"
-                                      rows="4"
-                                      placeholder="Masukkan deskripsi kategori pelanggaran"></textarea>
+                            <label class="form-label">Nama Guru</label>
+                            <input type="text"
+                                   name="nama"
+                                   class="form-control"
+                                   value="<?= htmlspecialchars($data['nama'] ?? '') ?>"
+                                   required>
                         </div>
 
-                        <!-- STATUS AKTIF -->
-                        <div class="mb-4">
-                            <label for="status_aktif" class="form-label">
-                                Status Aktif
-                            </label>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email"
+                                   name="email"
+                                   class="form-control"
+                                   value="<?= htmlspecialchars($data['email'] ?? '') ?>"
+                                   required>
+                        </div>
 
+                        <div class="mb-3">
+                            <label class="form-label">Status Aktif</label>
                             <select name="status_aktif"
-                                    id="status_aktif"
                                     class="form-select"
                                     required>
 
-                                <option value="1">Aktif</option>
-                                <option value="0">Tidak Aktif</option>
+                                <option value="1"
+                                    <?= $data['status_aktif'] == 1 ? 'selected' : '' ?>>
+                                    Aktif
+                                </option>
+
+                                <option value="0"
+                                    <?= $data['status_aktif'] == 0 ? 'selected' : '' ?>>
+                                    Tidak Aktif
+                                </option>
 
                             </select>
                         </div>
 
-                        <!-- TOMBOL -->
                         <button type="submit" class="btn btn-primary">
-                            Simpan Kategori
+                            Update Guru
                         </button>
 
-                        <a href="kelola_pelanggaran_kategori.php"
+                        <a href="kelola_guru.php"
                            class="btn btn-secondary">
                             Kembali
                         </a>

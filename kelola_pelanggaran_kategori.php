@@ -17,7 +17,7 @@ if (!$hasil) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Kelola Kategori Pelanggaran</title>
+    <title>Kelola Pelanggaran Kategori</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -48,7 +48,7 @@ if (!$hasil) {
 
                 <a href="tambah_pelanggaran_kategori.php"
                    class="btn btn-primary">
-                    Tambah Kategori Pelanggaran
+                    + Tambah Kategori Pelanggaran
                 </a>
             </div>
 
