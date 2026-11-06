@@ -84,8 +84,8 @@ if ($_SESSION['role'] === "admin") {
             </li>
 
             <li class="nav-item mb-2">
-                <a href="about_me.php"
-                   class="nav-link <?= ($current_page == 'about_me.php') ? 'active' : 'text-white' ?>">
+                <a href="aboutme.php"
+                   class="nav-link <?= ($current_page == 'aboutme.php') ? 'active' : 'text-white' ?>">
                     About Me
                 </a>
             </li>
