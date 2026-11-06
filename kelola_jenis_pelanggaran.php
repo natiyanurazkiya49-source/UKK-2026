@@ -75,7 +75,7 @@ if (!$hasil) {
 
                 <a href="tambah_jenis_pelanggaran.php"
                    class="btn btn-primary">
-                     Tambah Jenis Pelanggaran
+                     + Tambah Jenis Pelanggaran
                 </a>
             </div>
 
