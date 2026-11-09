@@ -1,4 +1,3 @@
-
 <?php
 // tambah_wali_kelas.php
 include 'includes/cek_session.php';
@@ -33,8 +32,8 @@ $guru = mysqli_query(
     <title>Tambah Wali Kelas</title>
 
     <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -42,29 +41,44 @@ $guru = mysqli_query(
 <div class="container-fluid">
     <div class="row">
 
-        <!-- SIDEBAR -->
         <?php include 'layout/sidebar.php'; ?>
 
-        <!-- KONTEN UTAMA -->
+        <!-- KONTEN -->
         <main class="col-md-9 col-lg-10 p-4">
 
             <h1 class="mb-4">Tambah Wali Kelas</h1>
 
-            <div class="card shadow-sm">
+            <div class="mb-3">
+                <a href="kelola_wali_kelas.php" class="btn btn-secondary">
+                    Kembali ke Data Wali Kelas
+                </a>
+            </div>
+
+            <!-- PESAN ERROR -->
+            <?php if (isset($_SESSION['pesan_error'])) { ?>
+                <div class="alert alert-danger">
+                    <?= htmlspecialchars($_SESSION['pesan_error']); ?>
+                </div>
+
+                <?php unset($_SESSION['pesan_error']); ?>
+            <?php } ?>
+
+            <!-- FORM TAMBAH WALI KELAS -->
+            <div class="card shadow-sm mb-4">
 
                 <div class="card-header bg-primary text-white">
-                    Form Tambah Wali Kelas
+                    <h5 class="mb-0">Form Tambah Wali Kelas</h5>
                 </div>
 
                 <div class="card-body">
 
-                    <form action="proses_tambah_wali_kelas.php"
-                          method="POST"
-                          id="formTambahWaliKelas">
+                    <form action="proses_tambah_walikelas.php"
+                          method="POST">
 
                         <!-- TAHUN AJARAN -->
                         <div class="mb-3">
-                            <label for="tahun_ajaran_id" class="form-label">
+                            <label for="tahun_ajaran_id"
+                                   class="form-label">
                                 Tahun Ajaran
                             </label>
 
@@ -73,11 +87,13 @@ $guru = mysqli_query(
                                     class="form-select"
                                     required>
 
-                                <option value="">-- Pilih Tahun Ajaran --</option>
+                                <option value="">
+                                    -- Pilih Tahun Ajaran --
+                                </option>
 
                                 <?php while ($row = mysqli_fetch_assoc($tahun)) { ?>
-                                    <option value="<?= htmlspecialchars((string)$row['id']) ?>">
-                                        <?= htmlspecialchars($row['nama']) ?>
+                                    <option value="<?= htmlspecialchars($row['id']); ?>">
+                                        <?= htmlspecialchars($row['nama']); ?>
                                     </option>
                                 <?php } ?>
 
@@ -95,11 +111,13 @@ $guru = mysqli_query(
                                     class="form-select"
                                     required>
 
-                                <option value="">-- Pilih Kelas --</option>
+                                <option value="">
+                                    -- Pilih Kelas --
+                                </option>
 
                                 <?php while ($row = mysqli_fetch_assoc($kelas)) { ?>
-                                    <option value="<?= htmlspecialchars((string)$row['id']) ?>">
-                                        <?= htmlspecialchars($row['nama']) ?>
+                                    <option value="<?= htmlspecialchars($row['id']); ?>">
+                                        <?= htmlspecialchars($row['nama']); ?>
                                     </option>
                                 <?php } ?>
 
@@ -117,11 +135,13 @@ $guru = mysqli_query(
                                     class="form-select"
                                     required>
 
-                                <option value="">-- Pilih Guru --</option>
+                                <option value="">
+                                    -- Pilih Guru --
+                                </option>
 
                                 <?php while ($row = mysqli_fetch_assoc($guru)) { ?>
-                                    <option value="<?= htmlspecialchars((string)$row['id']) ?>">
-                                        <?= htmlspecialchars($row['nama']) ?>
+                                    <option value="<?= htmlspecialchars($row['id']); ?>">
+                                        <?= htmlspecialchars($row['nama']); ?>
                                     </option>
                                 <?php } ?>
 
@@ -130,7 +150,8 @@ $guru = mysqli_query(
 
                         <!-- TANGGAL MULAI -->
                         <div class="mb-3">
-                            <label for="tanggal_mulai" class="form-label">
+                            <label for="tanggal_mulai"
+                                   class="form-label">
                                 Tanggal Mulai
                             </label>
 
@@ -143,7 +164,8 @@ $guru = mysqli_query(
 
                         <!-- TANGGAL SELESAI -->
                         <div class="mb-3">
-                            <label for="tanggal_selesai" class="form-label">
+                            <label for="tanggal_selesai"
+                                   class="form-label">
                                 Tanggal Selesai
                             </label>
 
@@ -154,10 +176,11 @@ $guru = mysqli_query(
                                    required>
                         </div>
 
-                        <!-- STATUS -->
-                        <div class="mb-4">
-                            <label for="status_aktif" class="form-label">
-                                Status
+                        <!-- STATUS AKTIF -->
+                        <div class="mb-3">
+                            <label for="status_aktif"
+                                   class="form-label">
+                                Status Aktif
                             </label>
 
                             <select name="status_aktif"
@@ -170,16 +193,18 @@ $guru = mysqli_query(
 
                             </select>
                         </div>
+                <!-- Tombol -->
+                <div class="mt-4">
 
-                        <!-- TOMBOL -->
-                        <button type="submit" class="btn btn-primary">
-                            Simpan Wali Kelas
-                        </button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-save me-1"></i>
+                        Simpan Wali Kelas
+                    </button>
 
-                        <a href="kelola_wali_kelas.php"
-                           class="btn btn-secondary">
-                            Kembali
-                        </a>
+                    <button type="reset" class="btn btn-outline-secondary px-4 ms-1">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>
+                        Reset
+                    </button>
 
                     </form>
 
@@ -191,6 +216,7 @@ $guru = mysqli_query(
     </div>
 </div>
 
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

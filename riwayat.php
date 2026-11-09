@@ -1,58 +1,66 @@
+
 <?php
 // riwayat.php
 
-// Memeriksa session login
+// 1. KONEKSI DAN SESSION
 include 'includes/cek_session.php';
-
-// Menghubungkan ke database
 include 'config/koneksi.php';
 
-// Mengambil kata pencarian
+// 2. MENGAMBIL INPUT PENCARIAN DAN FILTER
 $cari = isset($_GET['cari'])
     ? mysqli_real_escape_string($koneksi, trim($_GET['cari']))
     : '';
 
-// Mengambil filter status
 $status = isset($_GET['status'])
     ? mysqli_real_escape_string($koneksi, trim($_GET['status']))
     : '';
 
-// Query dasar
-$sql = "SELECT *
-        FROM t_pelanggaran_siswa
+// 3. QUERY DATA RIWAYAT PELANGGARAN
+$sql = "SELECT
+            ps.*,
+            s.nama AS nama_siswa,
+            k.nama AS nama_kelas,
+            p.nama AS nama_pelanggaran,
+            g.nama AS nama_guru
+        FROM t_pelanggaran_siswa ps
+        LEFT JOIN t_siswa s ON ps.siswa_id = s.id
+        LEFT JOIN t_kelas k ON ps.kelas_id = k.id
+        LEFT JOIN t_pelanggaran p ON ps.pelanggaran_id = p.id
+        LEFT JOIN t_guru g ON ps.guru_id = g.id
         WHERE 1=1";
 
-// Pencarian berdasarkan nama siswa, pelanggaran, kelas, atau guru
+// 4. PENCARIAN DATA
 if ($cari != '') {
     $sql .= " AND (
-        nama_siswa LIKE '%$cari%'
-        OR nama_pelanggaran LIKE '%$cari%'
-        OR nama_kelas LIKE '%$cari%'
-        OR nama_guru LIKE '%$cari%'
+        s.nama LIKE '%$cari%'
+        OR p.nama LIKE '%$cari%'
+        OR k.nama LIKE '%$cari%'
+        OR g.nama LIKE '%$cari%'
     )";
 }
 
-// Filter berdasarkan status
+// 5. FILTER STATUS
 if ($status != '') {
-    $sql .= " AND status = '$status'";
+    $sql .= " AND ps.status = '$status'";
 }
 
-// Urutkan berdasarkan tanggal terbaru
-$sql .= " ORDER BY tanggal DESC, id DESC";
+// 6. URUTKAN DATA TERBARU
+$sql .= " ORDER BY ps.tanggal DESC, ps.id DESC";
 
-// Menjalankan query
+// 7. MENJALANKAN QUERY
 $query = mysqli_query($koneksi, $sql);
 
 if (!$query) {
     die('Gagal mengambil data: ' . mysqli_error($koneksi));
 }
 
-// Menghitung jumlah data sesuai filter
+// Menghitung jumlah data
 $jumlah = mysqli_num_rows($query);
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -75,10 +83,10 @@ $jumlah = mysqli_num_rows($query);
 
         <?php include 'layout/sidebar.php'; ?>
 
-        <!-- KONTEN -->
+        <!-- KONTEN UTAMA -->
         <main class="col-md-9 col-lg-10 p-4">
 
-            <!-- Judul halaman -->
+            <!-- JUDUL HALAMAN -->
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                 <div>
                     <h2>Riwayat Pelanggaran Siswa</h2>
@@ -92,7 +100,7 @@ $jumlah = mysqli_num_rows($query);
                 </a>
             </div>
 
-            <!-- Ringkasan jumlah data -->
+            <!-- RINGKASAN JUMLAH DATA -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h6 class="text-muted">Jumlah Riwayat Ditampilkan</h6>
@@ -102,14 +110,17 @@ $jumlah = mysqli_num_rows($query);
                 </div>
             </div>
 
-            <!-- Pencarian dan filter -->
+            <!-- PENCARIAN DAN FILTER -->
             <div class="card shadow-sm mb-4">
+
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Pencarian dan Filter Riwayat</h5>
                 </div>
 
                 <div class="card-body">
+
                     <form method="GET" action="riwayat.php">
+
                         <div class="row g-3">
 
                             <div class="col-md-6">
@@ -133,6 +144,7 @@ $jumlah = mysqli_num_rows($query);
 
                                 <select name="status" id="status"
                                         class="form-select">
+
                                     <option value="">Semua Status</option>
 
                                     <option value="belum"
@@ -144,10 +156,12 @@ $jumlah = mysqli_num_rows($query);
                                         <?= $status == 'selesai' ? 'selected' : ''; ?>>
                                         Selesai
                                     </option>
+
                                 </select>
                             </div>
 
                             <div class="col-md-3 d-flex align-items-end gap-2">
+
                                 <button type="submit" class="btn btn-primary">
                                     Cari
                                 </button>
@@ -155,24 +169,29 @@ $jumlah = mysqli_num_rows($query);
                                 <a href="riwayat.php" class="btn btn-secondary">
                                     Reset
                                 </a>
+
                             </div>
 
                         </div>
+
                     </form>
+
                 </div>
             </div>
 
-            <!-- Tabel riwayat -->
+            <!-- TABEL RIWAYAT PELANGGARAN -->
             <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
+
+                <div class="card-header bg-dark text-white">
                     <h5 class="mb-0">Data Riwayat Pelanggaran</h5>
                 </div>
 
                 <div class="card-body">
+
                     <div class="table-responsive">
 
                         <table id="tabelRiwayat"
-                               class="table table-striped table-bordered table-hover align-middle">
+                               class="table table-striped table-bordered table-hover align-middle w-100">
 
                             <thead class="table-dark">
                                 <tr>
@@ -190,9 +209,10 @@ $jumlah = mysqli_num_rows($query);
                             </thead>
 
                             <tbody>
+
                                 <?php while ($data = mysqli_fetch_assoc($query)) { ?>
+
                                     <tr>
-                                        <!-- Nomor diisi otomatis oleh DataTables -->
                                         <td></td>
 
                                         <td>
@@ -249,17 +269,22 @@ $jumlah = mysqli_num_rows($query);
                                             }
                                             ?>
                                         </td>
+
                                     </tr>
+
                                 <?php } ?>
+
                             </tbody>
 
                         </table>
 
                     </div>
+
                 </div>
             </div>
 
         </main>
+
     </div>
 </div>
 
@@ -273,21 +298,26 @@ $jumlah = mysqli_num_rows($query);
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- Inisialisasi DataTables -->
+<!-- INISIALISASI DATATABLES -->
 <script>
 $(document).ready(function () {
+
     $('#tabelRiwayat').DataTable({
+
         pageLength: 10,
+
         lengthMenu: [5, 10, 25, 50, 100],
 
         searching: true,
+
         ordering: true,
+
         paging: true,
 
         // Urutkan berdasarkan tanggal terbaru
         order: [[1, 'desc']],
 
-        // Kolom No tidak diurutkan dan kolom No tidak dicari
+        // Pengaturan kolom
         columnDefs: [
             {
                 orderable: false,
@@ -296,35 +326,52 @@ $(document).ready(function () {
             }
         ],
 
-        // Nomor urut menyesuaikan pencarian dan halaman
+        // Nomor urut otomatis
         drawCallback: function () {
+
             var api = this.api();
+
             var nomorAwal = api.page.info().start;
 
             api.column(0, {
                 search: 'applied',
                 order: 'applied'
             }).nodes().each(function (cell, i) {
+
                 cell.innerHTML = nomorAwal + i + 1;
+
             });
+
         },
 
+        // Bahasa Indonesia
         language: {
+
             search: "Cari di tabel:",
+
             lengthMenu: "Tampilkan _MENU_ data",
+
             info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+
             infoEmpty: "Tidak ada data riwayat",
+
             infoFiltered: "(difilter dari _MAX_ total data)",
+
             zeroRecords: "Riwayat pelanggaran tidak ditemukan",
+
             emptyTable: "Belum ada riwayat pelanggaran",
+
             paginate: {
                 first: "Pertama",
                 last: "Terakhir",
                 next: "Berikutnya",
                 previous: "Sebelumnya"
             }
+
         }
+
     });
+
 });
 </script>
 

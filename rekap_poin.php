@@ -1,3 +1,4 @@
+
 <?php
 // rekap_poin.php
 
@@ -122,6 +123,7 @@ $jumlah_siswa = count($data_rekap);
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -244,12 +246,14 @@ $jumlah_siswa = count($data_rekap);
 
                 <!-- PENCARIAN DAN FILTER -->
                 <div class="card shadow-sm mb-4 no-print">
+
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">Pencarian dan Filter Siswa</h5>
                     </div>
 
                     <div class="card-body">
                         <form method="GET" action="rekap_poin.php">
+
                             <div class="row g-3">
 
                                 <div class="col-md-5">
@@ -273,6 +277,7 @@ $jumlah_siswa = count($data_rekap);
 
                                     <select name="kelas" id="kelas"
                                             class="form-select">
+
                                         <option value="">Semua Kelas</option>
 
                                         <?php foreach ($data_kelas as $kelas) { ?>
@@ -297,21 +302,25 @@ $jumlah_siswa = count($data_rekap);
                                 </div>
 
                             </div>
+
                         </form>
                     </div>
                 </div>
 
                 <!-- TABEL REKAP -->
                 <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
+
+                    <!-- HEADER DIUBAH MENJADI HITAM -->
+                    <div class="card-header bg-dark text-white">
                         <h5 class="mb-0">Data Rekap Poin Siswa</h5>
                     </div>
 
                     <div class="card-body">
+
                         <div class="table-responsive">
 
                             <table id="tabelRekap"
-                                   class="table table-striped table-bordered table-hover align-middle">
+                                   class="table table-striped table-bordered table-hover align-middle w-100">
 
                                 <thead class="table-dark">
                                     <tr>
@@ -325,7 +334,9 @@ $jumlah_siswa = count($data_rekap);
                                 </thead>
 
                                 <tbody>
+
                                     <?php foreach ($data_rekap as $data) { ?>
+
                                         <tr>
                                             <!-- Nomor otomatis oleh DataTables -->
                                             <td></td>
@@ -351,8 +362,11 @@ $jumlah_siswa = count($data_rekap);
                                                     <?= (int) $data['total_poin']; ?> poin
                                                 </span>
                                             </td>
+
                                         </tr>
+
                                     <?php } ?>
+
                                 </tbody>
 
                             </table>
@@ -363,12 +377,14 @@ $jumlah_siswa = count($data_rekap);
                             Total poin dihitung berdasarkan catatan pada
                             tabel t_pelanggaran_siswa.
                         </p>
+
                     </div>
                 </div>
 
             </div>
 
         </main>
+
     </div>
 </div>
 
@@ -382,15 +398,20 @@ $jumlah_siswa = count($data_rekap);
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- Inisialisasi DataTables -->
+<!-- INISIALISASI DATATABLES -->
 <script>
 $(document).ready(function () {
+
     $('#tabelRekap').DataTable({
+
         pageLength: 10,
+
         lengthMenu: [5, 10, 25, 50, 100],
 
         searching: true,
+
         ordering: true,
+
         paging: true,
 
         // Total poin tertinggi ditampilkan lebih dahulu
@@ -407,33 +428,50 @@ $(document).ready(function () {
 
         // Nomor mengikuti hasil pencarian dan halaman aktif
         drawCallback: function () {
+
             var api = this.api();
+
             var nomorAwal = api.page.info().start;
 
             api.column(0, {
                 search: 'applied',
                 order: 'applied'
             }).nodes().each(function (cell, i) {
+
                 cell.innerHTML = nomorAwal + i + 1;
+
             });
+
         },
 
+        // Bahasa Indonesia
         language: {
+
             search: "Cari di tabel:",
+
             lengthMenu: "Tampilkan _MENU_ data",
+
             info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+
             infoEmpty: "Tidak ada data rekap",
+
             infoFiltered: "(difilter dari _MAX_ total data)",
+
             zeroRecords: "Data siswa tidak ditemukan",
+
             emptyTable: "Belum ada data rekap poin siswa",
+
             paginate: {
                 first: "Pertama",
                 last: "Terakhir",
                 next: "Berikutnya",
                 previous: "Sebelumnya"
             }
+
         }
+
     });
+
 });
 </script>
 

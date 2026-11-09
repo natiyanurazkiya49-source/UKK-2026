@@ -64,15 +64,22 @@ if (!$data) {
                                name="id"
                                value="<?= htmlspecialchars($data['id']) ?>">
 
+                        <!-- NIP -->
                         <div class="mb-3">
                             <label class="form-label">NIP</label>
                             <input type="text"
                                    name="nip"
                                    class="form-control"
                                    value="<?= htmlspecialchars($data['nip'] ?? '') ?>"
+                                   maxlength="18"
+                                   inputmode="numeric"
+                                   pattern="[0-9]{1,18}"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 18)"
+                                   title="NIP hanya boleh berisi angka maksimal 18 digit"
                                    required>
                         </div>
 
+                        <!-- NAMA GURU -->
                         <div class="mb-3">
                             <label class="form-label">Nama Guru</label>
                             <input type="text"
@@ -82,6 +89,7 @@ if (!$data) {
                                    required>
                         </div>
 
+                        <!-- EMAIL -->
                         <div class="mb-3">
                             <label class="form-label">Email</label>
                             <input type="email"
@@ -91,6 +99,7 @@ if (!$data) {
                                    required>
                         </div>
 
+                        <!-- STATUS AKTIF -->
                         <div class="mb-3">
                             <label class="form-label">Status Aktif</label>
                             <select name="status_aktif"

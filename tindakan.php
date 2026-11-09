@@ -1,10 +1,13 @@
+
 <?php
 // tindakan.php
+
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
 // Proses menyimpan tindakan
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $id = (int) ($_POST['id'] ?? 0);
 
     $tindakan = mysqli_real_escape_string(
@@ -12,25 +15,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         trim($_POST['tindakan'] ?? '')
     );
 
-    // Samakan nama tabel dengan tabel yang ditampilkan
+    if ($id <= 0 || $tindakan === '') {
+        $_SESSION['pesan_error'] = "Data tindakan tidak valid.";
+        header('Location: tindakan.php');
+        exit;
+    }
+
     $sql_update = "UPDATE t_pelanggaran_siswa
                    SET tindakan = '$tindakan'
                    WHERE id = $id";
 
     if (mysqli_query($koneksi, $sql_update)) {
-        header('Location: tindakan.php?pesan=berhasil');
+
+        $_SESSION['pesan_sukses'] = "Tindakan berhasil disimpan.";
+        header('Location: tindakan.php');
         exit;
+
     } else {
-        $pesan_error = mysqli_error($koneksi);
+
+        $_SESSION['pesan_error'] = mysqli_error($koneksi);
+        header('Location: tindakan.php');
+        exit;
     }
 }
 
 // Mengambil data pelanggaran siswa
-$sql = "SELECT id, nama_siswa, nama_kelas,
-               nama_pelanggaran, tanggal,
-               keterangan, tindakan
-        FROM t_pelanggaran_siswa
-        ORDER BY tanggal DESC";
+$sql = "SELECT
+            ps.id,
+            s.nama AS nama_siswa,
+            k.nama AS nama_kelas,
+            p.nama AS nama_pelanggaran,
+            ps.tanggal,
+            ps.keterangan,
+            ps.tindakan
+        FROM t_pelanggaran_siswa ps
+        LEFT JOIN t_siswa s
+            ON ps.siswa_id = s.id
+        LEFT JOIN t_kelas k
+            ON ps.kelas_id = k.id
+        LEFT JOIN t_pelanggaran p
+            ON ps.pelanggaran_id = p.id
+        ORDER BY ps.tanggal DESC";
 
 $hasil = mysqli_query($koneksi, $sql);
 
@@ -41,6 +66,7 @@ if (!$hasil) {
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -67,6 +93,7 @@ if (!$hasil) {
         <main class="col-md-9 col-lg-10 p-4">
 
             <h2 class="mb-2">Tindakan Pelanggaran Siswa</h2>
+
             <p class="text-muted">
                 Kelola tindakan untuk setiap pelanggaran siswa.
             </p>
@@ -77,38 +104,55 @@ if (!$hasil) {
                 </a>
             </div>
 
-            <!-- Pesan berhasil -->
-            <?php if (isset($_GET['pesan']) && $_GET['pesan'] === 'berhasil') { ?>
+            <!-- PESAN SUKSES -->
+            <?php if (isset($_SESSION['pesan_sukses'])) { ?>
+
                 <div class="alert alert-success alert-dismissible fade show">
-                    Tindakan berhasil disimpan.
-                    <button type="button" class="btn-close"
-                            data-bs-dismiss="alert"></button>
+                    <?= htmlspecialchars($_SESSION['pesan_sukses']) ?>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                    </button>
                 </div>
+
+                <?php unset($_SESSION['pesan_sukses']); ?>
+
             <?php } ?>
 
-            <!-- Pesan error -->
-            <?php if (isset($pesan_error)) { ?>
-                <div class="alert alert-danger">
-                    Gagal menyimpan tindakan:
-                    <?= htmlspecialchars($pesan_error); ?>
+            <!-- PESAN ERROR -->
+            <?php if (isset($_SESSION['pesan_error'])) { ?>
+
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <?= htmlspecialchars($_SESSION['pesan_error']) ?>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                    </button>
                 </div>
+
+                <?php unset($_SESSION['pesan_error']); ?>
+
             <?php } ?>
 
-            <!-- TABEL DATA -->
+            <!-- TABEL DATA TINDAKAN -->
             <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
+
+                <div class="card-header bg-dark text-white">
                     <h5 class="mb-0">Data Pelanggaran Siswa</h5>
                 </div>
 
                 <div class="card-body">
+
                     <div class="table-responsive">
 
                         <table id="tabelTindakan"
-                               class="table table-striped table-bordered table-hover align-middle">
+                               class="table table-striped table-bordered table-hover align-middle w-100">
 
                             <thead class="table-dark">
                                 <tr>
-                                    <th>No.</th>
+                                    <th>No</th>
                                     <th>Nama Siswa</th>
                                     <th>Kelas</th>
                                     <th>Pelanggaran</th>
@@ -120,64 +164,74 @@ if (!$hasil) {
                             </thead>
 
                             <tbody>
+
                                 <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
+
                                     <tr>
-                                        <!-- Nomor otomatis dari DataTables -->
+
                                         <td></td>
 
                                         <td>
-                                            <?= htmlspecialchars($row['nama_siswa'] ?? '-'); ?>
+                                            <?= htmlspecialchars($row['nama_siswa'] ?? '-') ?>
                                         </td>
 
                                         <td>
-                                            <?= htmlspecialchars($row['nama_kelas'] ?? '-'); ?>
+                                            <?= htmlspecialchars($row['nama_kelas'] ?? '-') ?>
                                         </td>
 
                                         <td>
-                                            <?= htmlspecialchars($row['nama_pelanggaran'] ?? '-'); ?>
+                                            <?= htmlspecialchars($row['nama_pelanggaran'] ?? '-') ?>
                                         </td>
 
                                         <td>
-                                            <?= htmlspecialchars($row['tanggal'] ?? '-'); ?>
+                                            <?= htmlspecialchars($row['tanggal'] ?? '-') ?>
                                         </td>
 
                                         <td>
-                                            <?= htmlspecialchars($row['keterangan'] ?? '-'); ?>
+                                            <?= htmlspecialchars($row['keterangan'] ?? '-') ?>
                                         </td>
 
                                         <td>
                                             <form
-                                                id="formTindakan<?= (int) $row['id']; ?>"
+                                                id="formTindakan<?= (int) $row['id'] ?>"
                                                 method="POST"
                                                 action="tindakan.php">
 
-                                                <input type="hidden" name="id"
-                                                       value="<?= (int) $row['id']; ?>">
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="<?= (int) $row['id'] ?>">
 
                                                 <textarea
                                                     name="tindakan"
                                                     class="form-control"
                                                     rows="2"
                                                     placeholder="Masukkan tindakan..."
-                                                    required><?= htmlspecialchars($row['tindakan'] ?? ''); ?></textarea>
+                                                    required><?= htmlspecialchars($row['tindakan'] ?? '') ?></textarea>
+
                                             </form>
                                         </td>
 
                                         <td>
                                             <button
                                                 type="submit"
-                                                form="formTindakan<?= (int) $row['id']; ?>"
+                                                form="formTindakan<?= (int) $row['id'] ?>"
                                                 class="btn btn-success btn-sm">
+
                                                 Simpan
+
                                             </button>
                                         </td>
+
                                     </tr>
+
                                 <?php } ?>
+
                             </tbody>
 
                         </table>
 
                     </div>
+
                 </div>
             </div>
 
@@ -185,48 +239,23 @@ if (!$hasil) {
     </div>
 </div>
 
+<!-- Bootstrap 5 JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<!-- Bootstrap 5 JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- DataTables JS -->
+<!-- DataTables -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+
+<!-- DataTables Bootstrap 5 -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
 <!-- Inisialisasi DataTables -->
 <script>
 $(document).ready(function () {
+
     $('#tabelTindakan').DataTable({
-        pageLength: 10,
-        lengthMenu: [5, 10, 25, 50, 100],
-
-        searching: true,
-        ordering: true,
-        paging: true,
-
-        order: [[4, 'desc']],
-
-        columnDefs: [
-            {
-                orderable: false,
-                searchable: false,
-                targets: [0, 7]
-            }
-        ],
-
-        drawCallback: function () {
-            var api = this.api();
-            var nomorAwal = api.page.info().start;
-
-            api.column(0, {
-                search: 'applied',
-                order: 'applied'
-            }).nodes().each(function (cell, i) {
-                cell.innerHTML = nomorAwal + i + 1;
-            });
-        },
 
         language: {
             search: "Cari:",
@@ -236,14 +265,39 @@ $(document).ready(function () {
             infoFiltered: "(difilter dari _MAX_ total data)",
             zeroRecords: "Data pelanggaran tidak ditemukan",
             emptyTable: "Belum ada data pelanggaran",
+
             paginate: {
                 first: "Pertama",
                 last: "Terakhir",
                 next: "Berikutnya",
                 previous: "Sebelumnya"
             }
+        },
+
+        pageLength: 10,
+
+        lengthMenu: [5, 10, 25, 50, 100],
+
+        order: [[4, 'desc']],
+
+        columnDefs: [
+            {
+                targets: [0, 7],
+                orderable: false,
+                searchable: false
+            }
+        ],
+
+        drawCallback: function () {
+            var api = this.api();
+
+            api.column(0, { page: 'current' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1 + api.page.info().start;
+            });
         }
+
     });
+
 });
 </script>
 

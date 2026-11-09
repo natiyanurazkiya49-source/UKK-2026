@@ -1,10 +1,14 @@
+
 <?php
 // laporan.php
 
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-// Jika tombol Export Excel ditekan, proses unduhan
+// ============================================
+// 1. EXPORT EXCEL
+// ============================================
+
 if (isset($_GET['export']) && $_GET['export'] === 'excel') {
 
     $sqlExcel = "
@@ -13,8 +17,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'excel') {
             s.nama AS nama_siswa,
             p.kode,
             p.nama AS nama_pelanggaran,
-            p.poin,
-            ps.id AS id_pelanggaran_siswa
+            p.poin
         FROM t_pelanggaran_siswa ps
         JOIN t_siswa s
             ON ps.siswa_id = s.id
@@ -52,13 +55,29 @@ if (isset($_GET['export']) && $_GET['export'] === 'excel') {
     $no = 1;
 
     while ($row = mysqli_fetch_assoc($dataExcel)) {
+
         echo '<tr>';
+
         echo '<td>' . $no++ . '</td>';
-        echo '<td>' . htmlspecialchars((string) $row['nis'], ENT_QUOTES, 'UTF-8') . '</td>';
-        echo '<td>' . htmlspecialchars((string) $row['nama_siswa'], ENT_QUOTES, 'UTF-8') . '</td>';
-        echo '<td>' . htmlspecialchars((string) ($row['kode'] ?? ''), ENT_QUOTES, 'UTF-8') . '</td>';
-        echo '<td>' . htmlspecialchars((string) $row['nama_pelanggaran'], ENT_QUOTES, 'UTF-8') . '</td>';
+
+        echo '<td>' .
+            htmlspecialchars((string) $row['nis'], ENT_QUOTES, 'UTF-8') .
+            '</td>';
+
+        echo '<td>' .
+            htmlspecialchars((string) $row['nama_siswa'], ENT_QUOTES, 'UTF-8') .
+            '</td>';
+
+        echo '<td>' .
+            htmlspecialchars((string) ($row['kode'] ?? ''), ENT_QUOTES, 'UTF-8') .
+            '</td>';
+
+        echo '<td>' .
+            htmlspecialchars((string) $row['nama_pelanggaran'], ENT_QUOTES, 'UTF-8') .
+            '</td>';
+
         echo '<td>' . (int) $row['poin'] . '</td>';
+
         echo '</tr>';
     }
 
@@ -68,7 +87,11 @@ if (isset($_GET['export']) && $_GET['export'] === 'excel') {
     exit;
 }
 
-// Ambil data untuk ditampilkan di halaman laporan
+
+// ============================================
+// 2. MENGAMBIL DATA LAPORAN
+// ============================================
+
 $sql = "
     SELECT
         ps.id,
@@ -91,14 +114,18 @@ if (!$hasil) {
     die("Gagal mengambil laporan: " .
         htmlspecialchars(mysqli_error($koneksi), ENT_QUOTES, 'UTF-8'));
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Laporan Pelanggaran Siswa</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -107,37 +134,30 @@ if (!$hasil) {
     <!-- DataTables Bootstrap 5 -->
     <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css"
           rel="stylesheet">
+
     <style>
+
         body {
             background-color: #f8f9fa;
         }
 
-        main {
-            min-height: 100vh;
+        .card-header {
+            background-color: #212529;
+            color: white;
+            font-weight: bold;
         }
 
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        .table thead th {
+            white-space: nowrap;
         }
 
-        .judul-halaman {
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        #tabelLaporan th,
-        #tabelLaporan td {
+        .table td {
             vertical-align: middle;
         }
 
-        .dataTables_wrapper {
-            padding-top: 10px;
-        }
-
-        /* Pengaturan khusus saat mencetak atau menyimpan sebagai PDF */
+        /* Pengaturan cetak PDF */
         @media print {
+
             body {
                 background: #fff !important;
                 font-size: 12px;
@@ -178,6 +198,8 @@ if (!$hasil) {
             .card-header {
                 border: none !important;
                 padding: 0 0 10px 0 !important;
+                color: #000 !important;
+                background: #fff !important;
             }
 
             .card-body {
@@ -202,8 +224,8 @@ if (!$hasil) {
                 background: #fff !important;
             }
 
-            h3,
-            h5 {
+            h1 {
+                font-size: 20px;
                 color: #000 !important;
             }
 
@@ -212,12 +234,15 @@ if (!$hasil) {
                 margin: 1.5cm;
             }
         }
+
     </style>
+
 </head>
 
 <body>
 
 <div class="container-fluid">
+
     <div class="row">
 
         <!-- SIDEBAR -->
@@ -226,58 +251,69 @@ if (!$hasil) {
         <!-- KONTEN UTAMA -->
         <main class="col-md-9 col-lg-10 p-4">
 
-            <h3 class="judul-halaman">Laporan Pelanggaran Siswa</h3>
+            <!-- JUDUL HALAMAN -->
+            <h1 class="mb-3">Laporan Pelanggaran Siswa</h1>
 
-            <div class="card">
+            <!-- TOMBOL NAVIGASI DAN EXPORT -->
+            <div class="mb-3 no-print">
 
-                <div class="card-header bg-white d-flex
-                            justify-content-between align-items-center">
+                <a href="dashboard.php" class="btn btn-secondary">
+                    Kembali ke Dashboard
+                </a>
 
-                    <h5 class="mb-0">Data Laporan Pelanggaran</h5>
+                <button type="button"
+                        onclick="cetakPDF()"
+                        class="btn btn-danger">
+                    Cetak PDF
+                </button>
 
-                    <div class="no-print">
-                        <!-- Tombol Cetak PDF -->
-                        <button type="button"
-                                onclick="cetakPDF()"
-                                class="btn btn-danger btn-sm">
-                            Cetak PDF
-                        </button>
+                <a href="laporan.php?export=excel"
+                   class="btn btn-success">
+                    Export Excel
+                </a>
 
-                        <!-- Tombol Export Excel -->
-                        <a href="laporan.php?export=excel"
-                           class="btn btn-success btn-sm">
-                            Export Excel
-                        </a>
-                    </div>
+            </div>
 
+
+            <!-- CARD DATA LAPORAN -->
+            <div class="card shadow-sm">
+
+                <!-- HEADER CARD -->
+                <div class="card-header">
+                    Data Laporan Pelanggaran
                 </div>
-                
+
+                <!-- BODY CARD -->
                 <div class="card-body">
 
                     <div class="table-responsive">
 
-                        <table id="tabelWaliKelas"
+                        <table id="tabelLaporan"
                                class="table table-striped table-bordered table-hover align-middle w-100">
 
+                            <!-- HEADER TABEL -->
                             <thead class="table-dark">
+
                                 <tr>
-                                    <th>No.</th>
+                                    <th>No</th>
                                     <th>NIS</th>
                                     <th>Nama Siswa</th>
                                     <th>Kode Pelanggaran</th>
                                     <th>Jenis Pelanggaran</th>
                                     <th>Poin</th>
                                 </tr>
+
                             </thead>
 
+                            <!-- ISI TABEL -->
                             <tbody>
-                                <?php
-                                $no = 1;
 
-                                while ($row = mysqli_fetch_assoc($hasil)) {
-                                ?>
+                                <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
+
                                     <tr>
-                                        <td><?= $no++; ?></td>
+
+                                        <!-- Nomor urut otomatis -->
+                                        <td></td>
 
                                         <td>
                                             <?= htmlspecialchars(
@@ -311,20 +347,30 @@ if (!$hasil) {
                                             ); ?>
                                         </td>
 
-                                        <td><?= (int) $row['poin']; ?></td>
+                                        <td>
+                                            <?= (int) $row['poin']; ?>
+                                        </td>
+
                                     </tr>
+
                                 <?php } ?>
+
                             </tbody>
 
                         </table>
 
                     </div>
+
                 </div>
+
             </div>
 
         </main>
+
     </div>
+
 </div>
+
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -336,58 +382,109 @@ if (!$hasil) {
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
 
+<!-- INISIALISASI DATATABLES -->
 <script>
-let panjangHalamanSebelumCetak = 10;
+
+var panjangHalamanSebelumCetak = 10;
 
 $(document).ready(function () {
-    $('#tabelLaporan').DataTable({
+
+    var tabel = $('#tabelLaporan').DataTable({
+
         language: {
+
             search: "Cari:",
+
             lengthMenu: "Tampilkan _MENU_ data",
+
             info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+
             infoEmpty: "Tidak ada data",
+
             infoFiltered: "(difilter dari _MAX_ total data)",
+
             zeroRecords: "Data tidak ditemukan",
+
             emptyTable: "Belum ada laporan pelanggaran",
+
             paginate: {
                 first: "Pertama",
                 last: "Terakhir",
                 next: "Berikutnya",
                 previous: "Sebelumnya"
             }
+
         },
+
         pageLength: 10,
+
         lengthMenu: [5, 10, 25, 50, 100],
+
         order: [[2, 'asc']],
+
         columnDefs: [
             {
                 targets: 0,
                 orderable: false,
                 searchable: false
             }
-        ]
+        ],
+
+        // Nomor urut otomatis
+        drawCallback: function () {
+
+            var api = this.api();
+
+            var info = api.page.info();
+
+            api.column(0, {
+                page: 'current'
+            }).nodes().each(function (cell, i) {
+
+                cell.innerHTML = info.start + i + 1;
+
+            });
+
+        }
+
     });
+
 });
 
-// Fungsi cetak PDF melalui menu cetak browser
-function cetakPDF() {
-    const tabel = $('#tabelLaporan').DataTable();
 
-    // Tampilkan semua data sebelum mencetak
+// ============================================
+// FUNGSI CETAK PDF
+// ============================================
+
+function cetakPDF() {
+
+    var tabel = $('#tabelLaporan').DataTable();
+
+    // Simpan jumlah data per halaman
     panjangHalamanSebelumCetak = tabel.page.len();
+
+    // Tampilkan semua data
     tabel.page.len(-1).draw();
 
-    // Beri waktu untuk memperbarui tabel sebelum membuka dialog cetak
+    // Jalankan cetak browser
     setTimeout(function () {
+
         window.print();
+
     }, 300);
+
 }
 
-// Kembalikan jumlah data per halaman setelah dialog cetak ditutup
+
+// Kembalikan pagination setelah cetak selesai
 window.addEventListener('afterprint', function () {
-    const tabel = $('#tabelLaporan').DataTable();
+
+    var tabel = $('#tabelLaporan').DataTable();
+
     tabel.page.len(panjangHalamanSebelumCetak).draw();
+
 });
+
 </script>
 
 </body>
