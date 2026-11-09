@@ -324,15 +324,6 @@ $hasil = mysqli_query($koneksi, $sql);
                                           class="form-control"
                                           rows="3"></textarea>
                             </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Tindakan</label>
-
-                                <textarea name="tindakan"
-                                          class="form-control"
-                                          rows="3"></textarea>
-                            </div>
-
                         </div>
 
                         <button type="submit" class="btn btn-primary">
