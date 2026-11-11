@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Mengambil data pelanggaran siswa
+// Mengambil hanya pelanggaran yang belum diberi tindakan
 $sql = "SELECT
             ps.id,
             s.nama AS nama_siswa,
@@ -55,6 +55,8 @@ $sql = "SELECT
             ON ps.kelas_id = k.id
         LEFT JOIN t_pelanggaran p
             ON ps.pelanggaran_id = p.id
+        WHERE ps.tindakan IS NULL
+           OR TRIM(ps.tindakan) = ''
         ORDER BY ps.tanggal DESC";
 
 $hasil = mysqli_query($koneksi, $sql);
