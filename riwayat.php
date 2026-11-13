@@ -1,4 +1,3 @@
-
 <?php
 // riwayat.php
 
@@ -15,7 +14,7 @@ $status = isset($_GET['status'])
     ? mysqli_real_escape_string($koneksi, trim($_GET['status']))
     : '';
 
-// 3. QUERY DATA RIWAYAT PELANGGARAN
+// 3. QUERY DATA RIWAYAT PELANGGARAN (STATUS SELESAI DIKECUALIKAN)
 $sql = "SELECT
             ps.*,
             s.nama AS nama_siswa,
@@ -27,7 +26,8 @@ $sql = "SELECT
         LEFT JOIN t_kelas k ON ps.kelas_id = k.id
         LEFT JOIN t_pelanggaran p ON ps.pelanggaran_id = p.id
         LEFT JOIN t_guru g ON ps.guru_id = g.id
-        WHERE 1=1";
+        WHERE 1=1 
+        AND (ps.status != 'selesai' AND ps.status != 'Selesai')";
 
 // 4. PENCARIAN DATA
 if ($cari != '') {
@@ -91,7 +91,7 @@ $jumlah = mysqli_num_rows($query);
                 <div>
                     <h2>Riwayat Pelanggaran Siswa</h2>
                     <p class="text-muted mb-0">
-                        Daftar catatan pelanggaran siswa yang telah dicatat.
+                        Daftar catatan pelanggaran siswa yang belum selesai.
                     </p>
                 </div>
 
@@ -145,17 +145,14 @@ $jumlah = mysqli_num_rows($query);
                                 <select name="status" id="status"
                                         class="form-select">
 
-                                    <option value="">Semua Status</option>
+                                    <option value="">Semua Status (Aktif)</option>
 
                                     <option value="belum"
                                         <?= $status == 'belum' ? 'selected' : ''; ?>>
                                         Belum Ditindak
                                     </option>
 
-                                    <option value="selesai"
-                                        <?= $status == 'selesai' ? 'selected' : ''; ?>>
-                                        Selesai
-                                    </option>
+                                    <!-- Opsi 'selesai' sengaja dihilangkan dari filter karena data sudah disembunyikan -->
 
                                 </select>
                             </div>
@@ -314,10 +311,8 @@ $(document).ready(function () {
 
         paging: true,
 
-        // Urutkan berdasarkan tanggal terbaru
         order: [[1, 'desc']],
 
-        // Pengaturan kolom
         columnDefs: [
             {
                 orderable: false,
@@ -326,7 +321,6 @@ $(document).ready(function () {
             }
         ],
 
-        // Nomor urut otomatis
         drawCallback: function () {
 
             var api = this.api();
@@ -344,7 +338,6 @@ $(document).ready(function () {
 
         },
 
-        // Bahasa Indonesia
         language: {
 
             search: "Cari di tabel:",

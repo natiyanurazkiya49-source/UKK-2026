@@ -97,7 +97,7 @@ if (
 }
 
 // ============================================
-// 5. QUERY LAPORAN
+// 5. QUERY LAPORAN (STATUS SELESAI DIKECUALIKAN)
 // ============================================
 $sql = "SELECT
             ps.id,
@@ -118,7 +118,8 @@ $sql = "SELECT
             ps.status
 
         FROM t_pelanggaran_siswa ps
-        WHERE 1 = 1";
+        WHERE 1 = 1
+        AND (ps.status != 'selesai' AND ps.status != 'Selesai')";
 
 $types = "";
 $params = [];
@@ -325,7 +326,7 @@ $hasil = mysqli_stmt_get_result($stmt);
             </h1>
 
             <p class="text-muted">
-                Halaman laporan data pelanggaran siswa.
+                Halaman laporan data pelanggaran siswa yang belum selesai.
             </p>
 
 
@@ -338,7 +339,7 @@ $hasil = mysqli_stmt_get_result($stmt);
                 <?php if ($role === 'admin') { ?>
 
                     Anda login sebagai <strong>Admin</strong>.
-                    Anda dapat melihat seluruh laporan pelanggaran siswa.
+                    Anda dapat melihat seluruh laporan pelanggaran siswa yang aktif.
 
                 <?php } else { ?>
 
@@ -553,19 +554,13 @@ $hasil = mysqli_stmt_get_result($stmt);
                                             $status = $row['status'] ?? '-';
 
                                             if ($status === 'Selesai') {
-
                                                 echo '<span class="badge bg-success">Selesai</span>';
-
                                             } elseif ($status === 'Diproses') {
-
                                                 echo '<span class="badge bg-warning text-dark">Diproses</span>';
-
                                             } else {
-
                                                 echo '<span class="badge bg-secondary">' .
                                                     htmlspecialchars($status) .
                                                     '</span>';
-
                                             }
 
                                             ?>

@@ -1,4 +1,3 @@
-
 <?php
 // catat_pelanggaran.php
 
@@ -60,7 +59,7 @@ $pelanggaran = mysqli_query(
 );
 
 // ====================================
-// DATA CATATAN PELANGGARAN
+// DATA CATATAN PELANGGARAN (STATUS SELESAI DIKECUALIKAN)
 // ====================================
 
 $sql = "SELECT
@@ -79,6 +78,7 @@ $sql = "SELECT
             ON ps.kelas_id = k.id
         LEFT JOIN t_pelanggaran p
             ON ps.pelanggaran_id = p.id
+        WHERE ps.status != 'Selesai' AND ps.status != 'selesai'
         ORDER BY ps.id DESC";
 
 $hasil = mysqli_query($koneksi, $sql);
@@ -457,9 +457,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                         Proses
                                     </option>
 
-                                    <option value="Selesai">
-                                        Selesai
-                                    </option>
+                                    <!-- Opsi 'Selesai' dihilangkan dari form karena data selesai tidak ditampilkan lagi -->
 
                                 </select>
 
@@ -510,13 +508,13 @@ $hasil = mysqli_query($koneksi, $sql);
 
 
             <!-- ====================================
-                 DATA CATATAN PELANGGARAN
+                 DATA CATATAN PELANGGARAN (AKTIF)
             ==================================== -->
 
             <div class="card shadow-sm">
 
                 <div class="card-header">
-                    <h5 class="mb-0">Data Catatan Pelanggaran</h5>
+                    <h5 class="mb-0">Data Catatan Pelanggaran (Aktif)</h5>
                 </div>
 
                 <div class="card-body">
@@ -587,8 +585,6 @@ $hasil = mysqli_query($koneksi, $sql);
                                                 $badge = 'warning';
                                             } elseif ($status == 'Proses') {
                                                 $badge = 'primary';
-                                            } elseif ($status == 'Selesai') {
-                                                $badge = 'success';
                                             }
                                             ?>
 
@@ -600,30 +596,20 @@ $hasil = mysqli_query($koneksi, $sql);
 
                                         <td>
 
-                                            <?php if ($row['status'] !== 'Selesai') { ?>
+                                            <a href="edit_catat_pelanggaran.php?id=<?= $row['id']; ?>"
+                                               class="btn btn-warning btn-sm mb-1">
 
-                                                <a href="edit_catat_pelanggaran.php?id=<?= $row['id']; ?>"
-                                                   class="btn btn-warning btn-sm mb-1">
+                                                Edit
 
-                                                    Edit
+                                            </a>
 
-                                                </a>
+                                            <a href="hapus_catat_pelanggaran.php?id=<?= $row['id']; ?>"
+                                               class="btn btn-danger btn-sm mb-1"
+                                               onclick="return confirm('Yakin ingin menghapus pelanggaran ini?')">
 
-                                                <a href="hapus_catat_pelanggaran.php?id=<?= $row['id']; ?>"
-                                                   class="btn btn-danger btn-sm mb-1"
-                                                   onclick="return confirm('Yakin ingin menghapus pelanggaran ini?')">
+                                                Hapus
 
-                                                    Hapus
-
-                                                </a>
-
-                                            <?php } else { ?>
-
-                                                <span class="text-muted">
-                                                    Tidak ada aksi
-                                                </span>
-
-                                            <?php } ?>
+                                            </a>
 
                                         </td>
 
