@@ -199,12 +199,20 @@ if ($kelas_filter != '') {
                 background: #fff !important;
             }
 
+            .container-fluid,
+            .row,
+            main {
+                display: block !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
             /* Menyembunyikan sidebar, menu, pencarian, dan ringkasan saat dicetak */
             .col-md-3,
             .col-lg-2,
             aside,
             nav,
-            .no-print,
             .dt-search,
             .dt-length,
             .dt-paging,
@@ -216,13 +224,9 @@ if ($kelas_filter != '') {
                 display: none !important;
             }
 
-            .container-fluid,
-            .row,
-            main {
-                display: block !important;
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
+            /* Perbaikan: .no-print ditaruh di bawah .row agar display: none berhasil menimpa display: block */
+            .no-print {
+                display: none !important;
             }
 
             .header-cetak,
@@ -334,7 +338,7 @@ if ($kelas_filter != '') {
                 </div>
 
                 <!-- ================================= -->
-                <!-- RINGKASAN (Ditambahkan no-print agar hilang saat cetak) -->
+                <!-- RINGKASAN -->
                 <!-- ================================= -->
 
                 <div class="row g-3 mb-4 no-print">

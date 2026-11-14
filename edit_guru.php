@@ -1,23 +1,36 @@
 <?php
 // edit_guru.php
+
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    die("ID guru tidak valid.");
+// Ambil ID guru
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
+if ($id <= 0) {
+    $_SESSION['pesan_error'] = "ID guru tidak valid.";
+    header("Location: kelola_guru.php");
+    exit;
 }
 
-$id = (int) $_GET['id'];
+// Ambil data guru
+$stmt = mysqli_prepare(
+    $koneksi,
+    "SELECT * FROM t_guru WHERE id = ?"
+);
 
-$stmt = mysqli_prepare($koneksi, "SELECT * FROM t_guru WHERE id = ?");
 mysqli_stmt_bind_param($stmt, "i", $id);
 mysqli_stmt_execute($stmt);
 
 $hasil = mysqli_stmt_get_result($stmt);
 $data = mysqli_fetch_assoc($hasil);
 
+mysqli_stmt_close($stmt);
+
 if (!$data) {
-    die("Data guru tidak ditemukan.");
+    $_SESSION['pesan_error'] = "Data guru tidak ditemukan.";
+    header("Location: kelola_guru.php");
+    exit;
 }
 ?>
 
@@ -30,7 +43,6 @@ if (!$data) {
 
     <title>Edit Guru</title>
 
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           rel="stylesheet">
 </head>
@@ -40,93 +52,152 @@ if (!$data) {
 <div class="container-fluid">
     <div class="row">
 
-        <!-- SIDEBAR -->
+        <!-- Sidebar -->
         <?php include 'layout/sidebar.php'; ?>
 
-        <!-- KONTEN UTAMA -->
+        <!-- Konten Utama -->
         <main class="col-md-9 col-lg-10 p-4">
 
-            <h1 class="mb-4">Edit Guru</h1>
+            <!-- Judul dan Tombol Kembali -->
+            <div class="mb-4">
+                <h2 class="mb-3">Edit Guru</h2>
 
+                <a href="kelola_guru.php" class="btn btn-secondary">
+                    Kembali ke Data Guru
+                </a>
+            </div>
+
+            <!-- Pesan Error -->
+            <?php if (isset($_SESSION['pesan_error'])): ?>
+                <div class="alert alert-danger alert-dismissible fade show"
+                     role="alert">
+
+                    <?= htmlspecialchars($_SESSION['pesan_error']); ?>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                </div>
+
+                <?php unset($_SESSION['pesan_error']); ?>
+            <?php endif; ?>
+
+            <!-- Form Edit Guru -->
             <div class="card shadow-sm">
 
                 <div class="card-header bg-primary text-white">
-                    Form Edit Guru
+                    <h5 class="mb-0"> Form Edit Guru</h5>
                 </div>
 
                 <div class="card-body">
 
-                    <form action="proses_edit_guru.php"
-                          method="POST"
-                          id="formEditGuru">
+                    <form action="proses_edit_guru.php" method="POST">
 
                         <input type="hidden"
                                name="id"
-                               value="<?= htmlspecialchars($data['id']) ?>">
+                               value="<?= (int) $data['id']; ?>">
 
                         <!-- NIP -->
                         <div class="mb-3">
-                            <label class="form-label">NIP</label>
+                            <label for="nip" class="form-label">
+                                NIP
+                            </label>
+
                             <input type="text"
+                                   class="form-control"
+                                   id="nip"
                                    name="nip"
-                                   class="form-control"
-                                   value="<?= htmlspecialchars($data['nip'] ?? '') ?>"
-                                   maxlength="18"
-                                   inputmode="numeric"
-                                   pattern="[0-9]{1,18}"
-                                   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 18)"
-                                   title="NIP hanya boleh berisi angka maksimal 18 digit"
+                                   value="<?= htmlspecialchars($data['nip'] ?? ''); ?>"
+                                   placeholder="Masukkan NIP Guru"
                                    required>
                         </div>
 
-                        <!-- NAMA GURU -->
+                        <!-- Nama Guru -->
                         <div class="mb-3">
-                            <label class="form-label">Nama Guru</label>
+                            <label for="nama" class="form-label">
+                                Nama Guru
+                            </label>
+
                             <input type="text"
+                                   class="form-control"
+                                   id="nama"
                                    name="nama"
-                                   class="form-control"
-                                   value="<?= htmlspecialchars($data['nama'] ?? '') ?>"
+                                   value="<?= htmlspecialchars($data['nama'] ?? ''); ?>"
+                                   placeholder="Masukkan Nama Guru"
                                    required>
                         </div>
 
-                        <!-- EMAIL -->
+                        <!-- Email -->
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label for="email" class="form-label">
+                                Email
+                            </label>
+
                             <input type="email"
-                                   name="email"
                                    class="form-control"
-                                   value="<?= htmlspecialchars($data['email'] ?? '') ?>"
+                                   id="email"
+                                   name="email"
+                                   value="<?= htmlspecialchars($data['email'] ?? ''); ?>"
+                                   placeholder="Masukkan Email Guru"
                                    required>
                         </div>
 
-                        <!-- STATUS AKTIF -->
+                        <!-- Password -->
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password"
+                               class="form-control"
+                               placeholder="Masukkan Password"
+                               minlength="6"
+                               required>
+                    </div>
+
+                    <!-- Konfirmasi Password -->
+                    <div class="mb-3">
+                        <label class="form-label">Konfirmasi Password</label>
+                        <input type="password" name="konfirmasi_password"
+                               class="form-control"
+                               placeholder="Ulangi Password"
+                               minlength="6"
+                               required>
+                    </div>
+
+                        <!-- Status Aktif -->
                         <div class="mb-3">
-                            <label class="form-label">Status Aktif</label>
-                            <select name="status_aktif"
-                                    class="form-select"
+                            <label for="status_aktif" class="form-label">
+                                Status Aktif
+                            </label>
+
+                            <select class="form-select"
+                                    id="status_aktif"
+                                    name="status_aktif"
                                     required>
 
                                 <option value="1"
-                                    <?= $data['status_aktif'] == 1 ? 'selected' : '' ?>>
+                                    <?= ($data['status_aktif'] == 1) ? 'selected' : ''; ?>>
                                     Aktif
                                 </option>
 
                                 <option value="0"
-                                    <?= $data['status_aktif'] == 0 ? 'selected' : '' ?>>
+                                    <?= ($data['status_aktif'] == 0) ? 'selected' : ''; ?>>
                                     Tidak Aktif
                                 </option>
 
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">
-                            Update Guru
-                        </button>
+                        <!-- Tombol -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                Update Guru
+                            </button>
 
-                        <a href="kelola_guru.php"
-                           class="btn btn-secondary">
-                            Kembali
-                        </a>
+                            <a href="kelola_guru.php"
+                               class="btn btn-secondary">
+                                Batal
+                            </a>
+                        </div>
 
                     </form>
 

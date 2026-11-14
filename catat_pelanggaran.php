@@ -59,7 +59,7 @@ $pelanggaran = mysqli_query(
 );
 
 // ====================================
-// DATA CATATAN PELANGGARAN (STATUS SELESAI DIKECUALIKAN)
+// DATA CATATAN PELANGGARAN (SEMUA STATUS DITAMPILKAN)
 // ====================================
 
 $sql = "SELECT
@@ -78,7 +78,6 @@ $sql = "SELECT
             ON ps.kelas_id = k.id
         LEFT JOIN t_pelanggaran p
             ON ps.pelanggaran_id = p.id
-        WHERE ps.status != 'Selesai' AND ps.status != 'selesai'
         ORDER BY ps.id DESC";
 
 $hasil = mysqli_query($koneksi, $sql);
@@ -457,7 +456,9 @@ $hasil = mysqli_query($koneksi, $sql);
                                         Proses
                                     </option>
 
-                                    <!-- Opsi 'Selesai' dihilangkan dari form karena data selesai tidak ditampilkan lagi -->
+                                    <option value="Selesai">
+                                        Selesai
+                                    </option>
 
                                 </select>
 
@@ -508,13 +509,13 @@ $hasil = mysqli_query($koneksi, $sql);
 
 
             <!-- ====================================
-                 DATA CATATAN PELANGGARAN (AKTIF)
+                 DATA CATATAN PELANGGARAN
             ==================================== -->
 
             <div class="card shadow-sm">
 
                 <div class="card-header">
-                    <h5 class="mb-0">Data Catatan Pelanggaran (Aktif)</h5>
+                    <h5 class="mb-0">Data Catatan Pelanggaran</h5>
                 </div>
 
                 <div class="card-body">
@@ -585,6 +586,8 @@ $hasil = mysqli_query($koneksi, $sql);
                                                 $badge = 'warning';
                                             } elseif ($status == 'Proses') {
                                                 $badge = 'primary';
+                                            } elseif (strcasecmp($status, 'Selesai') == 0) {
+                                                $badge = 'success';
                                             }
                                             ?>
 
@@ -595,22 +598,19 @@ $hasil = mysqli_query($koneksi, $sql);
                                         </td>
 
                                         <td>
-
-                                            <a href="edit_catat_pelanggaran.php?id=<?= $row['id']; ?>"
-                                               class="btn btn-warning btn-sm mb-1">
-
-                                                Edit
-
-                                            </a>
-
-                                            <a href="hapus_catat_pelanggaran.php?id=<?= $row['id']; ?>"
-                                               class="btn btn-danger btn-sm mb-1"
-                                               onclick="return confirm('Yakin ingin menghapus pelanggaran ini?')">
-
-                                                Hapus
-
-                                            </a>
-
+                                            <?php if (strcasecmp($row['status'] ?? '', 'Selesai') != 0) { ?>
+                                                <a href="edit_catat_pelanggaran.php?id=<?= $row['id']; ?>"
+                                                   class="btn btn-warning btn-sm mb-1">
+                                                    Edit
+                                                </a>
+                                                <a href="hapus_catat_pelanggaran.php?id=<?= $row['id']; ?>"
+                                                   class="btn btn-danger btn-sm mb-1"
+                                                   onclick="return confirm('Yakin ingin menghapus pelanggaran ini?')">
+                                                    Hapus
+                                                </a>
+                                            <?php } else { ?>
+                                                <span class="text-muted fst-italic small">Selesai (Terkunci)</span>
+                                            <?php } ?>
                                         </td>
 
                                     </tr>

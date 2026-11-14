@@ -1,53 +1,50 @@
 <?php
 // riwayat.php
 
-// 1. KONEKSI DAN SESSION
+// Memeriksa session login
 include 'includes/cek_session.php';
+
+// Menghubungkan ke database
 include 'config/koneksi.php';
 
-// 2. MENGAMBIL INPUT PENCARIAN DAN FILTER
+// Mengambil kata pencarian
 $cari = isset($_GET['cari'])
     ? mysqli_real_escape_string($koneksi, trim($_GET['cari']))
     : '';
 
+// Mengambil filter status
 $status = isset($_GET['status'])
     ? mysqli_real_escape_string($koneksi, trim($_GET['status']))
     : '';
 
-// 3. QUERY DATA RIWAYAT PELANGGARAN (STATUS SELESAI DIKECUALIKAN)
-$sql = "SELECT
-            ps.*,
-            s.nama AS nama_siswa,
-            k.nama AS nama_kelas,
-            p.nama AS nama_pelanggaran,
-            g.nama AS nama_guru
-        FROM t_pelanggaran_siswa ps
-        LEFT JOIN t_siswa s ON ps.siswa_id = s.id
-        LEFT JOIN t_kelas k ON ps.kelas_id = k.id
-        LEFT JOIN t_pelanggaran p ON ps.pelanggaran_id = p.id
-        LEFT JOIN t_guru g ON ps.guru_id = g.id
-        WHERE 1=1 
-        AND (ps.status != 'selesai' AND ps.status != 'Selesai')";
+// Ambil ID user yang sedang login
+$id_user = (int) ($_SESSION['id'] ?? 0);
 
-// 4. PENCARIAN DATA
+// Query dasar: hanya riwayat guru yang memiliki akun login tersebut
+$sql = "SELECT p.*
+        FROM t_pelanggaran_siswa p
+        INNER JOIN t_guru g ON p.guru_id = g.id
+        WHERE g.user_id = $id_user";
+
+// Pencarian
 if ($cari != '') {
     $sql .= " AND (
-        s.nama LIKE '%$cari%'
-        OR p.nama LIKE '%$cari%'
-        OR k.nama LIKE '%$cari%'
-        OR g.nama LIKE '%$cari%'
+        p.nama_siswa LIKE '%$cari%'
+        OR p.nama_pelanggaran LIKE '%$cari%'
+        OR p.nama_kelas LIKE '%$cari%'
+        OR p.nama_guru LIKE '%$cari%'
     )";
 }
 
-// 5. FILTER STATUS
+// Filter status
 if ($status != '') {
-    $sql .= " AND ps.status = '$status'";
+    $sql .= " AND p.status = '$status'";
 }
 
-// 6. URUTKAN DATA TERBARU
-$sql .= " ORDER BY ps.tanggal DESC, ps.id DESC";
+// Urutkan berdasarkan tanggal terbaru
+$sql .= " ORDER BY p.tanggal DESC, p.id DESC";
 
-// 7. MENJALANKAN QUERY
+// Menjalankan query
 $query = mysqli_query($koneksi, $sql);
 
 if (!$query) {
@@ -58,9 +55,9 @@ if (!$query) {
 $jumlah = mysqli_num_rows($query);
 ?>
 
+
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -83,15 +80,15 @@ $jumlah = mysqli_num_rows($query);
 
         <?php include 'layout/sidebar.php'; ?>
 
-        <!-- KONTEN UTAMA -->
+        <!-- KONTEN -->
         <main class="col-md-9 col-lg-10 p-4">
 
-            <!-- JUDUL HALAMAN -->
+            <!-- Judul halaman -->
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                 <div>
                     <h2>Riwayat Pelanggaran Siswa</h2>
                     <p class="text-muted mb-0">
-                        Daftar catatan pelanggaran siswa yang belum selesai.
+                        Daftar catatan pelanggaran siswa yang telah dicatat.
                     </p>
                 </div>
 
@@ -100,7 +97,7 @@ $jumlah = mysqli_num_rows($query);
                 </a>
             </div>
 
-            <!-- RINGKASAN JUMLAH DATA -->
+            <!-- Ringkasan jumlah data -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h6 class="text-muted">Jumlah Riwayat Ditampilkan</h6>
@@ -110,17 +107,14 @@ $jumlah = mysqli_num_rows($query);
                 </div>
             </div>
 
-            <!-- PENCARIAN DAN FILTER -->
+            <!-- Pencarian dan filter -->
             <div class="card shadow-sm mb-4">
-
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Pencarian dan Filter Riwayat</h5>
                 </div>
 
                 <div class="card-body">
-
                     <form method="GET" action="riwayat.php">
-
                         <div class="row g-3">
 
                             <div class="col-md-6">
@@ -144,21 +138,21 @@ $jumlah = mysqli_num_rows($query);
 
                                 <select name="status" id="status"
                                         class="form-select">
-
-                                    <option value="">Semua Status (Aktif)</option>
+                                    <option value="">Semua Status</option>
 
                                     <option value="belum"
                                         <?= $status == 'belum' ? 'selected' : ''; ?>>
                                         Belum Ditindak
                                     </option>
 
-                                    <!-- Opsi 'selesai' sengaja dihilangkan dari filter karena data sudah disembunyikan -->
-
+                                    <option value="selesai"
+                                        <?= $status == 'selesai' ? 'selected' : ''; ?>>
+                                        Selesai
+                                    </option>
                                 </select>
                             </div>
 
                             <div class="col-md-3 d-flex align-items-end gap-2">
-
                                 <button type="submit" class="btn btn-primary">
                                     Cari
                                 </button>
@@ -166,29 +160,24 @@ $jumlah = mysqli_num_rows($query);
                                 <a href="riwayat.php" class="btn btn-secondary">
                                     Reset
                                 </a>
-
                             </div>
 
                         </div>
-
                     </form>
-
                 </div>
             </div>
 
-            <!-- TABEL RIWAYAT PELANGGARAN -->
+            <!-- Tabel riwayat -->
             <div class="card shadow-sm">
-
-                <div class="card-header bg-dark text-white">
+                <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Data Riwayat Pelanggaran</h5>
                 </div>
 
                 <div class="card-body">
-
                     <div class="table-responsive">
 
                         <table id="tabelRiwayat"
-                               class="table table-striped table-bordered table-hover align-middle w-100">
+                               class="table table-striped table-bordered table-hover align-middle">
 
                             <thead class="table-dark">
                                 <tr>
@@ -206,10 +195,9 @@ $jumlah = mysqli_num_rows($query);
                             </thead>
 
                             <tbody>
-
                                 <?php while ($data = mysqli_fetch_assoc($query)) { ?>
-
                                     <tr>
+                                        <!-- Nomor diisi otomatis oleh DataTables -->
                                         <td></td>
 
                                         <td>
@@ -266,22 +254,17 @@ $jumlah = mysqli_num_rows($query);
                                             }
                                             ?>
                                         </td>
-
                                     </tr>
-
                                 <?php } ?>
-
                             </tbody>
 
                         </table>
 
                     </div>
-
                 </div>
             </div>
 
         </main>
-
     </div>
 </div>
 
@@ -295,24 +278,21 @@ $jumlah = mysqli_num_rows($query);
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- INISIALISASI DATATABLES -->
+<!-- Inisialisasi DataTables -->
 <script>
 $(document).ready(function () {
-
     $('#tabelRiwayat').DataTable({
-
         pageLength: 10,
-
         lengthMenu: [5, 10, 25, 50, 100],
 
         searching: true,
-
         ordering: true,
-
         paging: true,
 
+        // Urutkan berdasarkan tanggal terbaru
         order: [[1, 'desc']],
 
+        // Kolom No tidak diurutkan dan kolom No tidak dicari
         columnDefs: [
             {
                 orderable: false,
@@ -321,50 +301,35 @@ $(document).ready(function () {
             }
         ],
 
+        // Nomor urut menyesuaikan pencarian dan halaman
         drawCallback: function () {
-
             var api = this.api();
-
             var nomorAwal = api.page.info().start;
 
             api.column(0, {
                 search: 'applied',
                 order: 'applied'
             }).nodes().each(function (cell, i) {
-
                 cell.innerHTML = nomorAwal + i + 1;
-
             });
-
         },
 
         language: {
-
             search: "Cari di tabel:",
-
             lengthMenu: "Tampilkan _MENU_ data",
-
             info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-
             infoEmpty: "Tidak ada data riwayat",
-
             infoFiltered: "(difilter dari _MAX_ total data)",
-
             zeroRecords: "Riwayat pelanggaran tidak ditemukan",
-
             emptyTable: "Belum ada riwayat pelanggaran",
-
             paginate: {
                 first: "Pertama",
                 last: "Terakhir",
                 next: "Berikutnya",
                 previous: "Sebelumnya"
             }
-
         }
-
     });
-
 });
 </script>
 

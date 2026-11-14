@@ -65,21 +65,16 @@ $siswa = mysqli_fetch_assoc($data);
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label d-block">Jenis Kelamin</label>
-
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
-                                       name="jenis_kelamin" id="laki"
-                                       value="L" required>
-                                <label class="form-check-label" for="laki">Laki-laki</label>
-                            </div>
-
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
-                                       name="jenis_kelamin" id="perempuan"
-                                       value="P" required>
-                                <label class="form-check-label" for="perempuan">Perempuan</label>
-                            </div>
+                            <label class="form-label">Jenis Kelamin</label>
+                            <select name="jenis_kelamin" class="form-select" required>
+                                <option value="">-- Pilih Jenis Kelamin --</option>
+                                <option value="L" <?= ($siswa['jenis_kelamin'] == 'L') ? 'selected' : ''; ?>>
+                                    Laki-laki
+                                </option>
+                                <option value="P" <?= ($siswa['jenis_kelamin'] == 'P') ? 'selected' : ''; ?>>
+                                    Perempuan
+                                </option>
+                            </select>
                         </div>
 
                         <div class="mb-3">
